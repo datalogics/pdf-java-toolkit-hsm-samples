@@ -1,0 +1,16 @@
+<FindBugsFilter>
+  <!-- Don't flag JUnit rules settings -->
+  <Match>
+    <Class name="~com\.datalogics\..*Test(?:Base)?"/>
+    <Field name="timeout"/>
+    <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+
+  <!-- Relax GetResource() in tests -->
+  <Match>
+    <Class name="~com\.datalogics\..*Test(?:Base)?"/>
+    <Bug pattern="UI_INHERITANCE_UNSAFE_GETRESOURCE"/>
+  </Match>
+</FindBugsFilter>
+
+<!-- vim: set et sts=2 sw=2 ts=2 : -->
