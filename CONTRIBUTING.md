@@ -1,10 +1,13 @@
 # Contributing
 
-_[TODO: Add general message about contributing to this project.]_
+Contributions to the PDF Java Toolkit HSM Samples project are welcome! We're setting high standards for this project, and so this document will help you create contributions that meet the standards of the project, and make pull request reviews go smoothly.
 
 ## Platform
 
-_[TODO: Add information about platform requirements.]_
+This project uses the same development platform as the main [PDF Java Toolkit](https://github.com/datalogics/pdf-java-toolkit-samples) project. However, since the samples are specifically designed to communicate with a Hardware Security Module (HSM), the code can only be run on platforms that can be configured to communicate with the HSM. The current list of supported HSMs and their assocated runtime platforms:
+
+* [_SafeNet Network/LunaSA HSM_](http://www.safenet-inc.com/data-encryption/hardware-security-modules-hsms/luna-hsms-key-management/luna-sa-network-hsm/): Windows, Linux, AIX, Solaris
+
 
 ## Recommended tools
 
