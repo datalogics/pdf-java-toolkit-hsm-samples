@@ -57,3 +57,8 @@ dependency-reduced-pom.xml
 # License files
 *.l4je
 *.l4j
+
+### OSX ###
+.DS_Store
+.AppleDouble
+.LSOverride
