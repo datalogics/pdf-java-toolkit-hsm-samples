@@ -9,12 +9,7 @@ import static org.reflections.ReflectionUtils.withModifier;
 import static org.reflections.ReflectionUtils.withName;
 import static org.reflections.ReflectionUtils.withParameters;
 
-import com.datalogics.pdf.hsm.samples.printing.FakePrintService;
-import com.datalogics.pdf.hsm.samples.printing.FakePrinterJob;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import mockit.Mock;
-import mockit.MockUp;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.BeforeClass;
@@ -23,7 +18,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -33,9 +27,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import javax.print.PrintService;
-import javax.print.PrintServiceLookup;
 
 /**
  * As an integration test, run all the main methods in the {@code com.datalogics.pdf.hsm.samples} package with an empty
@@ -102,8 +93,7 @@ public class RunMainWithArgsIntegrationTest {
         final Map<String, String[]> argsMap = new HashMap<String, String[]>() {
             private static final long serialVersionUID = 1L;
 
-            {
-                put("HelloWorld", new String[] { OUTPUT_DIR + HelloWorld.OUTPUT_PDF_PATH });
+            { // NOTE: Currently nothing to test.
             }
         };
 
@@ -142,24 +132,7 @@ public class RunMainWithArgsIntegrationTest {
      * @throws Exception a general exception was thrown
      */
     @Test
-    public <T extends PrinterJob> void testMainProgram() throws Exception {
-        // Set up fake printing, so that anything that tries to print goes to the
-        // printer equivalent of /dev/null
-        new MockUp<PrintServiceLookup>() {
-            @Mock
-            PrintService lookupDefaultPrintService() {
-                return new FakePrintService();
-            }
-        };
-
-        // Mock the PrinterJob.getPrinterJob() method to return a TestPrinterJob object
-        new MockUp<T>() {
-            @Mock
-            public PrinterJob getPrinterJob() {
-                return new FakePrinterJob();
-            }
-        };
-
+    public void testMainProgram() throws Exception {
         // Invoke the main method of that class
         try {
             mainMethod.invoke(null, new Object[] { argList });

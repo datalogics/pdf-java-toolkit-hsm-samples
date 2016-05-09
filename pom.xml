@@ -26,9 +26,9 @@
     </developer>
   </developers>
   <scm>
-    <connection>scm:git:git@github.com:datalogics/</connection>
-    <developerConnection>scm:git:git@github.com:datalogics/</developerConnection>
-    <url>https://github.com/datalogics/</url>
+    <connection>scm:git:git@github.com:datalogics/pdf-java-toolkit-hsm-samples.git</connection>
+    <developerConnection>scm:git:git@github.com:datalogics/pdf-java-toolkit-hsm-samples.git</developerConnection>
+    <url>https://github.com/datalogics/pdf-java-toolkit-hsm-samples</url>
   </scm>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
