@@ -9,12 +9,7 @@ import static org.reflections.ReflectionUtils.withModifier;
 import static org.reflections.ReflectionUtils.withName;
 import static org.reflections.ReflectionUtils.withParameters;
 
-import com.datalogics.pdf.hsm.samples.printing.FakePrintService;
-import com.datalogics.pdf.hsm.samples.printing.FakePrinterJob;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import mockit.Mock;
-import mockit.MockUp;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,7 +20,6 @@ import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 
-import java.awt.print.PrinterJob;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -33,9 +27,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Set;
-
-import javax.print.PrintService;
-import javax.print.PrintServiceLookup;
 
 /**
  * As an integration test, run all the main methods in the {@code com.datalogics.pdf.hsm.samples} package with an empty
@@ -113,24 +104,7 @@ public class RunMainMethodsFromJarIntegrationTest {
      * @throws Exception a general exception was thrown
      */
     @Test
-    public <T extends PrinterJob> void testMainProgram() throws Exception {
-        // Set up fake printing, so that anything that tries to print goes to the
-        // printer equivalent of /dev/null
-        new MockUp<PrintServiceLookup>() {
-            @Mock
-            PrintService lookupDefaultPrintService() {
-                return new FakePrintService();
-            }
-        };
-
-        // Mock the PrinterJob.getPrinterJob() method to return a TestPrinterJob object
-        new MockUp<T>() {
-            @Mock
-            public PrinterJob getPrinterJob() {
-                return new FakePrinterJob();
-            }
-        };
-
+    public void testMainProgram() throws Exception {
         // Invoke the main method of that class
         try {
             mainMethod.invoke(null, new Object[] { new String[] {} });
