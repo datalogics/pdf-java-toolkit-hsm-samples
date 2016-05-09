@@ -102,8 +102,7 @@ public class RunMainWithArgsIntegrationTest {
         final Map<String, String[]> argsMap = new HashMap<String, String[]>() {
             private static final long serialVersionUID = 1L;
 
-            {
-                put("HelloWorld", new String[] { OUTPUT_DIR + HelloWorld.OUTPUT_PDF_PATH });
+            { // NOTE: Currently nothing to test.
             }
         };
 
