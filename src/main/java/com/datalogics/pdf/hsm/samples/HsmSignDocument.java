@@ -18,8 +18,10 @@ import com.adobe.pdfjt.services.digsig.SignatureManager;
 import com.adobe.pdfjt.services.digsig.SignatureOptions;
 import com.adobe.pdfjt.services.digsig.UserInfo;
 
+import com.datalogics.pdf.hsm.samples.HsmManagerFactory.HsmType;
 import com.datalogics.pdf.hsm.samples.util.DocumentUtils;
 import com.datalogics.pdf.hsm.samples.util.IoUtils;
+import com.datalogics.pdf.security.HsmManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,6 +49,8 @@ public final class HsmSignDocument {
     private static final String DER_CERT_PATH = "pdfjt-cert.der";
     public static final String INPUT_UNSIGNED_PDF_PATH = "UnsignedDocument.pdf";
     public static final String OUTPUT_SIGNED_PDF_PATH = "SignedField.pdf";
+
+    private static HsmManager hsmManager = HsmManagerFactory.newInstance(HsmType.LUNA_SA_HSM);
 
     /**
      * This is a utility class, and won't be instantiated.
