@@ -27,7 +27,7 @@ public final class HsmManagerFactory {
         if (hsm.equals(HsmType.LUNA_SA_HSM)) {
             return new LunaHsmManager();
         }
-        return null;
+        throw new IllegalArgumentException("Must use a valid HsmType");
     }
 
     public enum HsmType {
