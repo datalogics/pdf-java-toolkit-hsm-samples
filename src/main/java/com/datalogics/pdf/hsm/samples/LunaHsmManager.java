@@ -101,15 +101,12 @@ public final class LunaHsmManager implements HsmManager {
                                                                                                 "LunaProvider");
             return credentialFactory.createCredentials(pkh, certChain[0], certChain);
         } catch (KeyStoreException | NoSuchAlgorithmException | CertificateException
-                 | IOException | UnrecoverableKeyException
-                 | PDFInvalidParameterException e) {
-            if (e instanceof PDFInvalidParameterException) {
-                throw new PDFInvalidParameterException("Exception while obtaining LunaSA Credentials: ", e);
-            } else if (e instanceof IOException) {
-                throw new IOException("Exception while obtaining LunaSA Credentials: ", e);
-            } else {
-                throw new SecurityException("Exception while obtaining LunaSA Credentials: ", e);
-            }
+                 | UnrecoverableKeyException e) {
+            throw new SecurityException("Exception while obtaining LunaSA Credentials: ", e);
+        } catch (final IOException e) {
+            throw new IOException("Exception while obtaining LunaSA Credentials: ", e);
+        } catch (final PDFInvalidParameterException e) {
+            throw new PDFInvalidParameterException("Exception while obtaining LunaSA Credentials: ", e);
         }
     }
 }
