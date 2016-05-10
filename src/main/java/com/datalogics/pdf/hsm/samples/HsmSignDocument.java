@@ -79,8 +79,15 @@ public final class HsmSignDocument {
         }
 
         final URL inputUrl = HsmSignDocument.class.getResource(INPUT_UNSIGNED_PDF_PATH);
+
+        // Log in to the HSM
+        hsmManager.hsmLogin(TOKEN_LABEL, PASSWORD);
+
         // Query and sign all permissible signature fields.
         signExistingSignatureFields(inputUrl, outputUrl);
+
+        // Log out of the HSM
+        hsmManager.hsmLogout();
     }
 
     /**
