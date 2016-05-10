@@ -84,7 +84,8 @@ public final class LunaHsmManager implements HsmManager {
      * java.lang.String)
      */
     @Override
-    public Credentials getCredentials(final String password, final String keyLabel, final String certLabel) {
+    public Credentials getCredentials(final String password, final String keyLabel, final String certLabel)
+                    throws SecurityException, IOException, PDFInvalidParameterException {
 
         try {
             // Obtain the Luna Keystore - Access the LunaSA via PKCS11 through
@@ -106,10 +107,13 @@ public final class LunaHsmManager implements HsmManager {
         } catch (KeyStoreException | NoSuchAlgorithmException | CertificateException
                  | IOException | UnrecoverableKeyException
                  | PDFInvalidParameterException e) {
-            if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.warning("Exception while obtaining LunaSA Credentials: " + e.getMessage());
+            if (e instanceof PDFInvalidParameterException) {
+                throw new PDFInvalidParameterException("Exception while obtaining LunaSA Credentials: ", e);
+            } else if (e instanceof IOException) {
+                throw new IOException("Exception while obtaining LunaSA Credentials: ", e);
+            } else {
+                throw new SecurityException("Exception while obtaining LunaSA Credentials: ", e);
             }
         }
-        return null;
     }
 }
