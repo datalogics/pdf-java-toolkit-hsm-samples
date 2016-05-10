@@ -13,12 +13,14 @@ import com.adobe.pdfjt.core.exceptions.PDFInvalidParameterException;
 import com.datalogics.pdf.security.HsmManager;
 
 import com.safenetinc.luna.LunaSlotManager;
+import com.safenetinc.luna.provider.LunaProvider;
 
 import java.io.IOException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.Security;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -40,6 +42,7 @@ public final class LunaHsmManager implements HsmManager {
     protected LunaHsmManager() {
         super();
         slotManager = LunaSlotManager.getInstance();
+        initializeProvider();
     }
 
     /*
@@ -111,6 +114,14 @@ public final class LunaHsmManager implements HsmManager {
             throw new IOException("Exception while obtaining LunaSA Credentials: ", e);
         } catch (final PDFInvalidParameterException e) {
             throw new PDFInvalidParameterException("Exception while obtaining LunaSA Credentials: ", e);
+        }
+    }
+
+    private void initializeProvider() {
+        // Add the Luna Security Provider if it is not already in the list of
+        // Java Security Providers
+        if (Security.getProvider("PROVIDER_NAME") == null) {
+            Security.addProvider(new LunaProvider());
         }
     }
 }
