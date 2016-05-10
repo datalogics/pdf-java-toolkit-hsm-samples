@@ -20,18 +20,14 @@ import java.security.PrivateKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
  * This class allows for connecting to a Luna SA Hsm Device.
  */
 public final class LunaHsmManager implements HsmManager {
-    private static final Logger LOGGER = Logger.getLogger(LunaHsmManager.class.getName());
 
     private LunaSlotManager slotManager;
-
 
     /**
      * Default no-arg constructor.
