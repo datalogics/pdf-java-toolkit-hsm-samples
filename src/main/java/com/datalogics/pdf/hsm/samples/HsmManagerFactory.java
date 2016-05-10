@@ -4,6 +4,8 @@
 
 package com.datalogics.pdf.hsm.samples;
 
+import com.datalogics.pdf.security.HsmManager;
+
 /**
  * Used to get instances of a HsmManager object.
  */

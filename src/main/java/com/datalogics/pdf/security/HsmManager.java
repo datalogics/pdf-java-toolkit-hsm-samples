@@ -2,7 +2,7 @@
  * Copyright 2016 Datalogics Inc.
  */
 
-package com.datalogics.pdf.hsm.samples;
+package com.datalogics.pdf.security;
 
 import com.adobe.pdfjt.core.credentials.Credentials;
 import com.adobe.pdfjt.core.exceptions.PDFInvalidParameterException;

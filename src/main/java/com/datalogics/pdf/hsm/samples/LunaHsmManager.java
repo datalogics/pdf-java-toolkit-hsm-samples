@@ -10,6 +10,8 @@ import com.adobe.pdfjt.core.credentials.PrivateKeyHolder;
 import com.adobe.pdfjt.core.credentials.PrivateKeyHolderFactory;
 import com.adobe.pdfjt.core.exceptions.PDFInvalidParameterException;
 
+import com.datalogics.pdf.security.HsmManager;
+
 import com.safenetinc.luna.LunaSlotManager;
 
 import java.io.IOException;
