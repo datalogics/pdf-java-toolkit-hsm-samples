@@ -102,6 +102,11 @@
       <version>1.3</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+     <groupId>com.safenetinc.luna</groupId>
+     <artifactId>provider</artifactId>
+     <version>5.2.0</version>
+    </dependency>
   </dependencies>
   <build>
     <pluginManagement>
