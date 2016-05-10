@@ -51,22 +51,6 @@ public final class LunaHsmManager implements HsmManager {
         // Initialize the SlotManager class
         slotManager = LunaSlotManager.getInstance();
 
-        // Login to the HSM
-        /*
-         * This method unlocks the token for use. There are multiple methods available within the LunaSlotManager class
-         * to login to the HSM:
-         *
-         * Login to the first available partition: login(String password)
-         *
-         * Login to the partition at the specified slot: login(int slot, String password)
-         *
-         * Login to the partition with the specified label: login(String TokenLabel, String password)
-         *
-         * Login to the partition with the specified user role: login(int slot, UserRole userType, String password)
-         *
-         * The password argument is the challenge password for the Luna SA partition or HSM. (Applications generally ask
-         * for password information interactively from the user.)
-         */
         if (tokenLabel == null) {
             slotManager.login(password);
         } else {
