@@ -20,7 +20,6 @@ import java.security.PrivateKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -92,16 +91,6 @@ public final class LunaHsmManager implements HsmManager {
             // the Luna Provider
             final KeyStore lunaKeyStore = KeyStore.getInstance("Luna");
             lunaKeyStore.load(null, null); // Can be null-null after login
-
-            // List the LunaSA contents
-            LOGGER.info("Luna Keystore contains");
-            final Enumeration<String> aliases = lunaKeyStore.aliases();
-            while (aliases.hasMoreElements()) {
-                final String keyStoreObj = aliases.nextElement();
-                if (LOGGER.isLoggable(Level.INFO)) {
-                    LOGGER.info("\t-" + keyStoreObj);
-                }
-            }
 
             // Retrieve the PrivateKey and Certificate by labels
             final PrivateKey privateKey = (PrivateKey) lunaKeyStore.getKey(keyLabel, password.toCharArray());
