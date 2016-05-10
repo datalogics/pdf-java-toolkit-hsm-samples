@@ -9,8 +9,6 @@ package com.datalogics.pdf.hsm.samples;
  */
 public final class HsmManagerFactory {
 
-    public static final int LUNA_SA_HSM = 1;
-
     /**
      * Factory class should not be instantiated.
      */
@@ -19,14 +17,18 @@ public final class HsmManagerFactory {
     /**
      * Gets a instance of a HsmManager for the needed type of HSM device.
      *
-     * @param type - Type of HSM device you are connecting to
+     * @param hsm - Type of HSM device you are connecting to
      * @return HsmManager
      */
 
-    public static HsmManager getInstance(final int type) {
-        if (type == LUNA_SA_HSM) {
+    public static HsmManager getInstance(final HsmType hsm) {
+        if (hsm.equals(HsmType.LUNA_SA_HSM)) {
             return new LunaHsmManager();
         }
         return null;
+    }
+
+    public enum HsmType {
+        LUNA_SA_HSM
     }
 }
