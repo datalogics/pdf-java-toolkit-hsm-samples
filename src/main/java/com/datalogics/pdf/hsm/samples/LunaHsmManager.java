@@ -31,6 +31,9 @@ public final class LunaHsmManager implements HsmManager {
 
     private final LunaSlotManager slotManager;
 
+    private static final String KEYSTORE_TYPE = "Luna";
+    private static final String PROVIDER_NAME = "LunaProvider";
+
     /**
      * Default no-arg constructor.
      */
@@ -87,7 +90,7 @@ public final class LunaHsmManager implements HsmManager {
         try {
             // Obtain the Luna Keystore - Access the LunaSA via PKCS11 through
             // the Luna Provider
-            final KeyStore lunaKeyStore = KeyStore.getInstance("Luna");
+            final KeyStore lunaKeyStore = KeyStore.getInstance(KEYSTORE_TYPE);
             lunaKeyStore.load(null, null); // Can be null-null after login
 
             // Retrieve the PrivateKey and Certificate by labels
@@ -99,7 +102,7 @@ public final class LunaHsmManager implements HsmManager {
             // Create credentials
             final CredentialFactory credentialFactory = CredentialFactory.newInstance();
             final PrivateKeyHolder pkh = PrivateKeyHolderFactory.newInstance().createPrivateKey(privateKey,
-                                                                                                "LunaProvider");
+                                                                                                PROVIDER_NAME);
             return credentialFactory.createCredentials(pkh, certChain[0], certChain);
         } catch (KeyStoreException | NoSuchAlgorithmException | CertificateException
                  | UnrecoverableKeyException e) {
