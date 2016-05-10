@@ -38,6 +38,10 @@ import java.util.logging.Logger;
 public final class HsmSignDocument {
     private static final Logger LOGGER = Logger.getLogger(HsmSignDocument.class.getName());
 
+    private static final String TOKEN_LABEL = null; // The HSM partition name or null
+    private static final String PRIVATE_KEY_LABEL = "pdfjt-eval-key"; // The private key label/alias
+    private static final String CERTIFICATE_LABEL = "pdfjt-eval-cert"; // The certificate label/alias
+    private static final String DIGESTER_LABEL = "SHA256";
 
     private static final String DER_KEY_PATH = "pdfjt-key.der";
     private static final String DER_CERT_PATH = "pdfjt-cert.der";
