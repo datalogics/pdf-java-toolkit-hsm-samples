@@ -29,13 +29,14 @@ import java.security.cert.X509Certificate;
  */
 public final class LunaHsmManager implements HsmManager {
 
-    private LunaSlotManager slotManager;
+    private final LunaSlotManager slotManager;
 
     /**
      * Default no-arg constructor.
      */
     protected LunaHsmManager() {
         super();
+        slotManager = LunaSlotManager.getInstance();
     }
 
     /*
@@ -45,8 +46,6 @@ public final class LunaHsmManager implements HsmManager {
      */
     @Override
     public boolean hsmLogin(final String tokenLabel, final String password) {
-        // Initialize the SlotManager class
-        slotManager = LunaSlotManager.getInstance();
 
         if (tokenLabel == null) {
             slotManager.login(password);
