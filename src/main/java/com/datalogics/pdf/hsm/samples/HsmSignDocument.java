@@ -12,11 +12,14 @@ import com.adobe.pdfjt.core.credentials.PrivateKeyHolderFactory;
 import com.adobe.pdfjt.core.exceptions.PDFException;
 import com.adobe.pdfjt.core.exceptions.PDFIOException;
 import com.adobe.pdfjt.core.license.LicenseManager;
+import com.adobe.pdfjt.core.securityframework.CryptoMode;
 import com.adobe.pdfjt.pdf.document.PDFDocument;
 import com.adobe.pdfjt.services.digsig.SignatureFieldInterface;
 import com.adobe.pdfjt.services.digsig.SignatureManager;
 import com.adobe.pdfjt.services.digsig.SignatureOptions;
 import com.adobe.pdfjt.services.digsig.UserInfo;
+import com.adobe.pdfjt.services.digsig.cryptoprovider.JCEProvider;
+import com.adobe.pdfjt.services.digsig.spi.CryptoContext;
 
 import com.datalogics.pdf.hsm.samples.HsmManagerFactory.HsmType;
 import com.datalogics.pdf.hsm.samples.util.DocumentUtils;
@@ -44,7 +47,7 @@ public final class HsmSignDocument {
     private static final String TOKEN_LABEL = null; // The HSM partition name or null
     private static final String PRIVATE_KEY_LABEL = "pdfjt-eval-key"; // The private key label/alias
     private static final String CERTIFICATE_LABEL = "pdfjt-eval-cert"; // The certificate label/alias
-    private static final String DIGESTER_LABEL = "SHA256";
+    private static final String DIGESTER_ALG = "SHA256";
 
     private static final String DER_KEY_PATH = "pdfjt-key.der";
     private static final String DER_CERT_PATH = "pdfjt-cert.der";
@@ -87,7 +90,8 @@ public final class HsmSignDocument {
             if (loggedIn) {
                 LOGGER.info("Logged into HSM");
             } else {
-                LOGGER.info("Failed to log into HSM");
+                LOGGER.info("Failed to log into HSM, exiting");
+                return;
             }
         }
 
@@ -141,7 +145,7 @@ public final class HsmSignDocument {
 
         ByteWriter byteWriter = null;
         try {
-            final Credentials credentials = createCredentials();
+            final Credentials credentials = hsmManager.getCredentials(PASSWORD, PRIVATE_KEY_LABEL, CERTIFICATE_LABEL);
             // Must be permitted to sign doc and field must be visible.
             if (sigField.isSigningPermitted()) {
                 if (sigField.isVisible()) {
@@ -157,8 +161,11 @@ public final class HsmSignDocument {
                     userInfo.setName("John Doe");
                     signatureOptions.setUserInfo(userInfo);
 
+                    // Set the crypto context mode, digest/hash method, and signature/encryption algorithm
+                    final CryptoContext context = new CryptoContext(CryptoMode.NON_FIPS_MODE, DIGESTER_ALG, "RSA");
+
                     // Sign the document.
-                    sigMgr.sign(sigField, signatureOptions, credentials, byteWriter);
+                    sigMgr.sign(sigField, signatureOptions, credentials, byteWriter, new JCEProvider(context));
                 } else {
                     throw new PDFIOException("Signature field is not visible");
                 }
