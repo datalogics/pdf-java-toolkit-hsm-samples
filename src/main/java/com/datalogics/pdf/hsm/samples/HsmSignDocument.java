@@ -39,6 +39,8 @@ import java.util.logging.Logger;
 public final class HsmSignDocument {
     private static final Logger LOGGER = Logger.getLogger(HsmSignDocument.class.getName());
 
+    private static final String PASSWORD = ""; // <-- Replace this with the HSM partition password
+
     private static final String TOKEN_LABEL = null; // The HSM partition name or null
     private static final String PRIVATE_KEY_LABEL = "pdfjt-eval-key"; // The private key label/alias
     private static final String CERTIFICATE_LABEL = "pdfjt-eval-cert"; // The certificate label/alias
