@@ -30,11 +30,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This is a sample that demonstrates how to find a specific signature field in a document so that API users can sign
- * the correct field. Note that, since we are using a sample certificate that isn't backed up by any certificate
- * authority, Adobe Acrobat (and possibly other applications) will display a warning when the document is opened. This
- * is not due to any error with the document itself and is only to let the user know that the certificate authenticity
- * could not be verified.
+ * This is a sample that demonstrates how to sign fields in a document using a Hardware Security Module (HSM). It will
+ * find a specific signature field in a document so that API users can sign the correct field. Note that the password,
+ * private key label, certificate label, and other parameters all must be customized for a particular HSM installation.
+ * This sample is set up to work with a Luna SA HSM device, with an evaluation certificate installed on the default
+ * partition; this HSM is not publicly accessible.
  */
 public final class HsmSignDocument {
     private static final Logger LOGGER = Logger.getLogger(HsmSignDocument.class.getName());
