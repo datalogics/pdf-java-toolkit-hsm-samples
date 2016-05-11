@@ -5,10 +5,7 @@
 package com.datalogics.pdf.hsm.samples;
 
 import com.adobe.internal.io.ByteWriter;
-import com.adobe.pdfjt.core.credentials.CredentialFactory;
 import com.adobe.pdfjt.core.credentials.Credentials;
-import com.adobe.pdfjt.core.credentials.PrivateKeyHolder;
-import com.adobe.pdfjt.core.credentials.PrivateKeyHolderFactory;
 import com.adobe.pdfjt.core.exceptions.PDFException;
 import com.adobe.pdfjt.core.exceptions.PDFIOException;
 import com.adobe.pdfjt.core.license.LicenseManager;
@@ -27,8 +24,6 @@ import com.datalogics.pdf.hsm.samples.util.IoUtils;
 import com.datalogics.pdf.security.HsmManager;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.logging.Level;
@@ -49,8 +44,6 @@ public final class HsmSignDocument {
     private static final String CERTIFICATE_LABEL = "pdfjt-eval-cert"; // The certificate label/alias
     private static final String DIGESTER_ALG = "SHA256";
 
-    private static final String DER_KEY_PATH = "pdfjt-key.der";
-    private static final String DER_CERT_PATH = "pdfjt-cert.der";
     public static final String INPUT_UNSIGNED_PDF_PATH = "UnsignedDocument.pdf";
     public static final String OUTPUT_SIGNED_PDF_PATH = "SignedField.pdf";
 
@@ -175,45 +168,5 @@ public final class HsmSignDocument {
                 byteWriter.close();
             }
         }
-    }
-
-    private static Credentials createCredentials() throws Exception {
-
-        // These are sample files whose authenticity won't be able to be verified by Acrobat. When opening a document
-        // signed with this certificate, Acrobat will display a warning. This does not indicate any error in the
-        // document itself aside from the unverifiable signature.
-        final String sigAlgorithm = "RSA";
-        final InputStream certStream = HsmSignDocument.class.getResourceAsStream(DER_CERT_PATH);
-        final InputStream keyStream = HsmSignDocument.class.getResourceAsStream(DER_KEY_PATH);
-
-        return createCredentialsFromDerBytes(certStream, keyStream, sigAlgorithm);
-    }
-
-
-    private static Credentials createCredentialsFromDerBytes(final InputStream certStream,
-                                                             final InputStream keyStream,
-                                                             final String sigAlgorithm)
-                    throws Exception {
-        final byte[] derEncodedPrivateKey = getDerEncodedData(keyStream);
-        final byte[] derEncodedCert = getDerEncodedData(certStream);
-        final PrivateKeyHolder privateKeyHolder = PrivateKeyHolderFactory
-                                                                         .newInstance()
-                                                                         .createPrivateKey(derEncodedPrivateKey,
-                                                                                           sigAlgorithm);
-        final Credentials credentials = CredentialFactory.newInstance()
-                                                         .createCredentials(privateKeyHolder, derEncodedCert,
-                                                                            null);
-        return credentials;
-    }
-
-    private static byte[] getDerEncodedData(final InputStream inputStream) throws IOException {
-        final byte[] derData = new byte[inputStream.available()];
-        final int totalBytes = inputStream.read(derData, 0, derData.length);
-        if (totalBytes == 0) {
-            LOGGER.info("getDerEncodedData(): No bytes read from InputStream");
-        }
-        inputStream.close();
-
-        return derData;
     }
 }
