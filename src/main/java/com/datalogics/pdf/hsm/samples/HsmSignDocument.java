@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Iterator;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -81,7 +82,14 @@ public final class HsmSignDocument {
         final URL inputUrl = HsmSignDocument.class.getResource(INPUT_UNSIGNED_PDF_PATH);
 
         // Log in to the HSM
-        hsmManager.hsmLogin(TOKEN_LABEL, PASSWORD);
+        final boolean loggedIn = hsmManager.hsmLogin(TOKEN_LABEL, PASSWORD);
+        if (LOGGER.isLoggable(Level.INFO)) {
+            if (loggedIn) {
+                LOGGER.info("Logged into HSM");
+            } else {
+                LOGGER.info("Failed to log into HSM");
+            }
+        }
 
         // Query and sign all permissible signature fields.
         signExistingSignatureFields(inputUrl, outputUrl);
