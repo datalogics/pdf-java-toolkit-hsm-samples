@@ -55,6 +55,13 @@ public final class LunaHsmManager implements HsmManager {
     @Override
     public boolean hsmLogin(final String tokenLabel, final String password) throws IllegalArgumentException {
 
+        // Check for non-null, non zero length password
+        if (password == null) {
+            throw new IllegalArgumentException("Password must not be null");
+        } else if (password.length() <= 0) {
+            throw new IllegalArgumentException("Password must not be zero length");
+        }
+
         try {
             if (tokenLabel == null) {
                 slotManager.login(password);
