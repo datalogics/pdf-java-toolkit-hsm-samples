@@ -81,13 +81,17 @@ public final class HsmSignDocument {
 
         // Log in to the HSM
         final boolean loggedIn = hsmManager.hsmLogin(TOKEN_LABEL, PASSWORD);
-        if (LOGGER.isLoggable(Level.INFO)) {
-            if (loggedIn) {
+
+        // Report whether we successfully logged in
+        if (loggedIn) {
+            if (LOGGER.isLoggable(Level.INFO)) {
                 LOGGER.info("Logged into HSM");
-            } else {
-                LOGGER.info("Failed to log into HSM, exiting");
-                return;
             }
+        } else {
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.warning("Failed to log into HSM, exiting");
+            }
+            return;
         }
 
         // Query and sign all permissible signature fields.
