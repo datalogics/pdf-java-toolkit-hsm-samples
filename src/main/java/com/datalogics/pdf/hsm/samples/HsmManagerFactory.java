@@ -12,6 +12,11 @@ import com.datalogics.pdf.security.HsmManager;
 public final class HsmManagerFactory {
 
     /**
+     * Luna SA Hsm Type
+     */
+    public static final String LUNA_HSM_TYPE = "luna";
+
+    /**
      * Factory class should not be instantiated.
      */
     private HsmManagerFactory() {}
@@ -19,18 +24,14 @@ public final class HsmManagerFactory {
     /**
      * Gets a new instance of a HsmManager for the needed type of HSM device.
      *
-     * @param hsm - Type of HSM device you are connecting to
+     * @param hsmType - Type of HSM device you are connecting to
      * @return HsmManager
      */
 
-    public static HsmManager newInstance(final HsmType hsm) {
-        if (hsm.equals(HsmType.LUNA_SA_HSM)) {
+    public static HsmManager newInstance(final String hsmType) {
+        if (hsmType.equals(LUNA_HSM_TYPE)) {
             return new LunaHsmManager();
         }
         throw new IllegalArgumentException("Must use a valid HsmType");
-    }
-
-    public enum HsmType {
-        LUNA_SA_HSM
     }
 }
