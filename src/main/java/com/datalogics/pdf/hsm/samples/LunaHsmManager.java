@@ -37,8 +37,8 @@ public final class LunaHsmManager implements HsmManager {
 
     private final LunaSlotManager slotManager;
 
-    private static final String KEYSTORE_TYPE = "Luna";
-    private static final String PROVIDER_NAME = "LunaProvider";
+    public static final String KEYSTORE_TYPE = "Luna";
+    public static final String PROVIDER_NAME = "LunaProvider";
 
     /**
      * Default no-arg constructor.
