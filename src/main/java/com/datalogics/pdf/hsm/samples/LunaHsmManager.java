@@ -53,7 +53,7 @@ public final class LunaHsmManager implements HsmManager {
      * @see com.datalogics.pdf.hsm.samples.HsmManager#hsmLogin(java.lang.String, java.lang.String)
      */
     @Override
-    public boolean hsmLogin(final String tokenLabel, final String password) throws IllegalArgumentException {
+    public boolean hsmLogin(final String tokenLabel, final String password) {
 
         // Check for non-null, non zero length password
         if (password == null) {

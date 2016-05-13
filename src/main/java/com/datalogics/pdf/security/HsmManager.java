@@ -23,7 +23,7 @@ public interface HsmManager {
      * @return a boolean indicating if the login was successful
      * @throws IllegalArgumentException if an argument was invalid
      */
-    boolean hsmLogin(final String tokenLabel, final String password) throws IllegalArgumentException;
+    boolean hsmLogin(final String tokenLabel, final String password);
 
     /**
      * Logs out of the default session with the HSM device.
