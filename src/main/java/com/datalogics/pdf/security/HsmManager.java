@@ -18,12 +18,11 @@ public interface HsmManager {
      * Performs a login operation to the HSM device. The login operation occurs on the given tokenLabel or the first
      * available slot if tokenLabel is null. NOTE: tokenLabel is synonymous with partition name.
      *
-     * @param tokenLabel - The label of the token to which to login
-     * @param password - The password to use for the login
+     * @param parms = Contains the parameters needed to login to the device
      * @return a boolean indicating if the login was successful
      * @throws IllegalArgumentException if an argument was invalid
      */
-    boolean hsmLogin(final String tokenLabel, final String password);
+    boolean hsmLogin(final HsmLoginParms parms);
 
     /**
      * Logs out of the default session with the HSM device.
