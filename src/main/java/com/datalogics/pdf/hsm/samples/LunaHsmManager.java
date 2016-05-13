@@ -12,6 +12,8 @@ import com.adobe.pdfjt.core.exceptions.PDFInvalidParameterException;
 
 import com.datalogics.pdf.security.HsmManager;
 
+import com.safenetinc.luna.LunaCryptokiException;
+import com.safenetinc.luna.LunaException;
 import com.safenetinc.luna.LunaSlotManager;
 import com.safenetinc.luna.provider.LunaProvider;
 
@@ -51,12 +53,23 @@ public final class LunaHsmManager implements HsmManager {
      * @see com.datalogics.pdf.hsm.samples.HsmManager#hsmLogin(java.lang.String, java.lang.String)
      */
     @Override
-    public boolean hsmLogin(final String tokenLabel, final String password) {
+    public boolean hsmLogin(final String tokenLabel, final String password) throws IllegalArgumentException {
 
-        if (tokenLabel == null) {
-            slotManager.login(password);
-        } else {
-            slotManager.login(tokenLabel, password);
+        // Check for non-null, non zero length password
+        if (password == null) {
+            throw new IllegalArgumentException("Password must not be null");
+        } else if (password.length() <= 0) {
+            throw new IllegalArgumentException("Password must not be zero length");
+        }
+
+        try {
+            if (tokenLabel == null) {
+                slotManager.login(password);
+            } else {
+                slotManager.login(tokenLabel, password);
+            }
+        } catch (LunaException | LunaCryptokiException e) {
+            throw new IllegalArgumentException("Error while logging into the Luna HSM" + e);
         }
 
         return slotManager.isLoggedIn();
