@@ -49,7 +49,7 @@ public final class HsmSignDocument {
     public static final String INPUT_UNSIGNED_PDF_PATH = "UnsignedDocument.pdf";
     public static final String OUTPUT_SIGNED_PDF_PATH = "SignedField.pdf";
 
-    private static HsmManager hsmManager = HsmManagerFactory.newInstance(HsmType.LUNA_SA_HSM);
+    private static HsmManager hsmManager = HsmManagerFactory.newInstance(HsmManagerFactory.LUNA_HSM_TYPE);
 
     /**
      * This is a utility class, and won't be instantiated.
