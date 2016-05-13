@@ -18,10 +18,10 @@ import com.adobe.pdfjt.services.digsig.UserInfo;
 import com.adobe.pdfjt.services.digsig.cryptoprovider.JCEProvider;
 import com.adobe.pdfjt.services.digsig.spi.CryptoContext;
 
-import com.datalogics.pdf.hsm.samples.HsmManagerFactory.HsmType;
 import com.datalogics.pdf.hsm.samples.util.DocumentUtils;
 import com.datalogics.pdf.hsm.samples.util.IoUtils;
 import com.datalogics.pdf.security.HsmManager;
+import com.datalogics.pdf.security.LunaHsmLoginParms;
 
 import java.io.File;
 import java.net.URL;
@@ -78,7 +78,7 @@ public final class HsmSignDocument {
         }
 
         // Log in to the HSM
-        final boolean loggedIn = hsmManager.hsmLogin(TOKEN_LABEL, PASSWORD);
+        final boolean loggedIn = hsmManager.hsmLogin(new LunaHsmLoginParms(TOKEN_LABEL, PASSWORD));
 
         // Report whether we successfully logged in
         if (loggedIn) {
