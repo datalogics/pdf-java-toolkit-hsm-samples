@@ -10,7 +10,9 @@ import com.adobe.pdfjt.core.credentials.PrivateKeyHolder;
 import com.adobe.pdfjt.core.credentials.PrivateKeyHolderFactory;
 import com.adobe.pdfjt.core.exceptions.PDFInvalidParameterException;
 
+import com.datalogics.pdf.security.HsmLoginParms;
 import com.datalogics.pdf.security.HsmManager;
+import com.datalogics.pdf.security.LunaHsmLoginParms;
 
 import com.safenetinc.luna.LunaCryptokiException;
 import com.safenetinc.luna.LunaException;
@@ -53,8 +55,13 @@ public final class LunaHsmManager implements HsmManager {
      * @see com.datalogics.pdf.hsm.samples.HsmManager#hsmLogin(java.lang.String, java.lang.String)
      */
     @Override
-    public boolean hsmLogin(final String tokenLabel, final String password) {
+    public boolean hsmLogin(final HsmLoginParms parms) {
+        if (!(parms instanceof LunaHsmLoginParms)) {
+            throw new IllegalArgumentException("Must pass a instanceof LunaHsmLoginParms "
+                                               + "to hsmLogin for LunaHsmManager.");
+        }
 
+        final String password = parms.getPassword();
         // Check for non-null, non zero length password
         if (password == null) {
             throw new IllegalArgumentException("Password must not be null");
@@ -62,6 +69,7 @@ public final class LunaHsmManager implements HsmManager {
             throw new IllegalArgumentException("Password must not be zero length");
         }
 
+        final String tokenLabel = ((LunaHsmLoginParms) parms).getTokenLabel();
         try {
             if (tokenLabel == null) {
                 slotManager.login(password);
