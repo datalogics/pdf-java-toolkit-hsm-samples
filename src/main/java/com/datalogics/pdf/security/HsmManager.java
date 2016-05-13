@@ -15,8 +15,7 @@ import java.io.IOException;
 public interface HsmManager {
 
     /**
-     * Performs a login operation to the HSM device. The login operation occurs on the given tokenLabel or the first
-     * available slot if tokenLabel is null. NOTE: tokenLabel is synonymous with partition name.
+     * Performs a login operation to the HSM device.
      *
      * @param parms = Contains the parameters needed to login to the device
      * @return a boolean indicating if the login was successful
