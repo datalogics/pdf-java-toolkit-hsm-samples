@@ -19,7 +19,7 @@ public interface HsmManager {
      * @return a boolean indicating if the login was successful
      * @throws IllegalArgumentException if an argument was invalid
      */
-    boolean hsmLogin(final HsmLoginParms parms);
+    boolean hsmLogin(final HsmLoginParameters parms);
 
     /**
      * Logs out of the default session with the HSM device.

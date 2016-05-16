@@ -51,8 +51,8 @@ public final class LunaHsmManager implements HsmManager {
      * @see com.datalogics.pdf.hsm.samples.HsmManager#hsmLogin(java.lang.String, java.lang.String)
      */
     @Override
-    public boolean hsmLogin(final HsmLoginParms parms) {
-        if (!(parms instanceof LunaHsmLoginParms)) {
+    public boolean hsmLogin(final HsmLoginParameters parms) {
+        if (!(parms instanceof LunaHsmLoginParameters)) {
             throw new IllegalArgumentException("Must pass a instanceof LunaHsmLoginParms "
                                                + "to hsmLogin for LunaHsmManager.");
         }
@@ -65,7 +65,7 @@ public final class LunaHsmManager implements HsmManager {
             throw new IllegalArgumentException("Password must not be zero length");
         }
 
-        final String tokenLabel = ((LunaHsmLoginParms) parms).getTokenLabel();
+        final String tokenLabel = ((LunaHsmLoginParameters) parms).getTokenLabel();
         try {
             if (tokenLabel == null) {
                 slotManager.login(password);

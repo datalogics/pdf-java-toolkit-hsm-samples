@@ -7,7 +7,7 @@ package com.datalogics.pdf.security;
 /**
  * This class represents login parameters that are used to login into any HSM device.
  */
-public class HsmLoginParms {
+public class HsmLoginParameters {
 
     private final String password;
 
@@ -16,7 +16,7 @@ public class HsmLoginParms {
      *
      * @param pswd - The password to use for the login
      */
-    public HsmLoginParms(final String pswd) {
+    public HsmLoginParameters(final String pswd) {
         this.password = pswd;
     }
 

@@ -25,7 +25,7 @@ import com.datalogics.pdf.hsm.samples.util.DocumentUtils;
 import com.datalogics.pdf.hsm.samples.util.IoUtils;
 import com.datalogics.pdf.security.HsmManager;
 import com.datalogics.pdf.security.HsmManagerFactory;
-import com.datalogics.pdf.security.LunaHsmLoginParms;
+import com.datalogics.pdf.security.LunaHsmLoginParameters;
 
 import java.io.File;
 import java.net.URL;
@@ -88,7 +88,7 @@ public final class HsmSignDocument {
 
         if (!hsmManager.isLoggedIn()) {
             // Log in to the HSM
-            hsmManager.hsmLogin(new LunaHsmLoginParms(TOKEN_LABEL, PASSWORD));
+            hsmManager.hsmLogin(new LunaHsmLoginParameters(TOKEN_LABEL, PASSWORD));
         }
 
         // Report whether we successfully logged in
