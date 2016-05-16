@@ -30,6 +30,13 @@ public interface HsmManager {
     void hsmLogout();
 
     /**
+     * Determines if logged in to the HSM Device.
+     *
+     * @return boolean
+     */
+    boolean isLoggedIn();
+
+    /**
      * Get the Private Key object for the HSM device.
      *
      * @param password - the password for recovering the key
