@@ -116,6 +116,10 @@ public final class LunaHsmManager implements HsmManager {
      */
     @Override
     public X509Certificate[] getCertificateChain(final String certLabel) {
+        if (!isLoggedIn) {
+            throw new SecurityException("Call the hsmLogin method to login to HSM device first.");
+        }
+
         X509Certificate cert;
         try {
             cert = (X509Certificate) lunaKeyStore.getCertificate(certLabel);
@@ -135,6 +139,9 @@ public final class LunaHsmManager implements HsmManager {
      */
     @Override
     public PrivateKey getPrivateKey(final String password, final String keyLabel) {
+        if (!isLoggedIn) {
+            throw new SecurityException("Call the hsmLogin method to login to HSM device first.");
+        }
         try {
             return (PrivateKey) lunaKeyStore.getKey(keyLabel, password.toCharArray());
         } catch (UnrecoverableKeyException | KeyStoreException | NoSuchAlgorithmException e) {
@@ -171,6 +178,9 @@ public final class LunaHsmManager implements HsmManager {
     }
 
     private void loadKeyStore() {
+        if (!isLoggedIn) {
+            throw new SecurityException("Call the hsmLogin method to login to HSM device first.");
+        }
         try {
             lunaKeyStore.load(null, null); // Can be null-null after login
         } catch (NoSuchAlgorithmException | CertificateException | IOException e) {
