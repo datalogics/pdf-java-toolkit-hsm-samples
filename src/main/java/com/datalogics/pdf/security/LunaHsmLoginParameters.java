@@ -12,10 +12,10 @@ public class LunaHsmLoginParameters extends HsmLoginParameters {
     private final String tokenLabel;
 
     /**
-     * Instantiate the login parameters for logging in to a Luna SA device using the first available Hsm partition slot
+     * Instantiate the login parameters for logging in to a Luna SA device using the first available HSM partition slot
      * and the given password.
      *
-     * @param password - The password to use for the login
+     * @param password the password to use for the login
      */
     public LunaHsmLoginParameters(final String password) {
         super(password);
@@ -23,10 +23,11 @@ public class LunaHsmLoginParameters extends HsmLoginParameters {
     }
 
     /**
-     * Instantiate the login parameters for logging in to a Luna SA Hsm device using the given tokenLabel and password.
+     * Instantiate the login parameters for logging in to a Luna SA HSM device using the given tokenLabel and password.
      *
-     * @param tokenLabel - The label of the token to which to login
-     * @param password - The password to use for the login
+     * @param tokenLabel the label of the token to which to login
+     * @param password the password to use for the login
+     * 
      */
     public LunaHsmLoginParameters(final String tokenLabel, final String password) {
         super(password);
@@ -34,7 +35,7 @@ public class LunaHsmLoginParameters extends HsmLoginParameters {
     }
 
     /**
-     * Get the Hsm tokenLabel which is synonymous with partition name.
+     * Get the HSM tokenLabel which is synonymous with partition name.
      *
      * @return tokenLabel
      */

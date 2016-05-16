@@ -12,9 +12,10 @@ public class HsmLoginParameters {
     private final String password;
 
     /**
-     * Instantiate the login parameters for logging in to any Hsm device using the given password.
+     * Instantiate the login parameters for logging in to any HSM device using the given password.
      *
-     * @param password - The password to use for the login
+     * @param password the password to use for the login
+     * 
      */
     public HsmLoginParameters(final String password) {
         this.password = password;
