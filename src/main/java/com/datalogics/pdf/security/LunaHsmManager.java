@@ -36,8 +36,7 @@ public final class LunaHsmManager implements HsmManager {
     /**
      * Default no-arg constructor.
      *
-     * @throws IOException
-     * @throws SecurityException
+     * @throws IOException an I/O operation failed or was interrupted
      */
     protected LunaHsmManager() throws IOException {
         super();
