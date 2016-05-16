@@ -26,8 +26,7 @@ import java.security.cert.X509Certificate;
 public final class LunaHsmManager implements HsmManager {
 
     private final LunaSlotManager slotManager;
-    private final KeyStore lunaKeyStore;
-
+    private KeyStore lunaKeyStore;
     private boolean isLoggedIn;
 
     public static final String KEYSTORE_TYPE = "Luna";
@@ -36,12 +35,10 @@ public final class LunaHsmManager implements HsmManager {
     /**
      * Default no-arg constructor.
      *
-     * @throws IOException an I/O operation failed or was interrupted
      */
-    protected LunaHsmManager() throws IOException {
+    protected LunaHsmManager() {
         super();
         slotManager = LunaSlotManager.getInstance();
-        lunaKeyStore = getLunaKeyStore();
         initializeProvider();
     }
 
@@ -159,16 +156,6 @@ public final class LunaHsmManager implements HsmManager {
         return PROVIDER_NAME;
     }
 
-    private KeyStore getLunaKeyStore() {
-        try {
-            // Obtain the Luna Keystore - Access the LunaSA via PKCS11 through
-            // the Luna Provider
-            return KeyStore.getInstance(KEYSTORE_TYPE);
-        } catch (final KeyStoreException e) {
-            throw new SecurityException("Exception while obtaining LunaSA KeyStore: ", e);
-        }
-    }
-
     private void initializeProvider() {
         // Add the Luna Security Provider if it is not already in the list of
         // Java Security Providers
@@ -182,8 +169,11 @@ public final class LunaHsmManager implements HsmManager {
             throw new SecurityException("Call the hsmLogin method to login to HSM device first.");
         }
         try {
+            // Obtain the Luna Keystore - Access the LunaSA via PKCS11 through
+            // the Luna Provider
+            lunaKeyStore = KeyStore.getInstance(KEYSTORE_TYPE);
             lunaKeyStore.load(null, null); // Can be null-null after login
-        } catch (NoSuchAlgorithmException | CertificateException | IOException e) {
+        } catch (NoSuchAlgorithmException | CertificateException | IOException | KeyStoreException e) {
             throw new SecurityException("Exception while loading LunaSA KeyStore: ", e);
         }
     }
