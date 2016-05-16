@@ -15,22 +15,22 @@ public class LunaHsmLoginParameters extends HsmLoginParameters {
      * Instantiate the login parameters for logging in to a Luna SA device using the first available Hsm partition slot
      * and the given password.
      *
-     * @param pswd - The password to use for the login
+     * @param password - The password to use for the login
      */
-    public LunaHsmLoginParameters(final String pswd) {
-        super(pswd);
+    public LunaHsmLoginParameters(final String password) {
+        super(password);
         this.tokenLabel = null;
     }
 
     /**
      * Instantiate the login parameters for logging in to a Luna SA Hsm device using the given tokenLabel and password.
      *
-     * @param tokenLbl - The label of the token to which to login
-     * @param pswd - The password to use for the login
+     * @param tokenLabel - The label of the token to which to login
+     * @param password - The password to use for the login
      */
-    public LunaHsmLoginParameters(final String tokenLbl, final String pswd) {
-        super(pswd);
-        this.tokenLabel = tokenLbl;
+    public LunaHsmLoginParameters(final String tokenLabel, final String password) {
+        super(password);
+        this.tokenLabel = tokenLabel;
     }
 
     /**
