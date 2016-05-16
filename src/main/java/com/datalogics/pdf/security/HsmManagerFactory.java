@@ -4,7 +4,6 @@
 
 package com.datalogics.pdf.security;
 
-import java.io.IOException;
 
 /**
  * Used to get instances of a HsmManager object.
@@ -26,10 +25,9 @@ public final class HsmManagerFactory {
      *
      * @param hsmType - Type of HSM device you are connecting to
      * @return HsmManager
-     * @throws IOException an I/O operation failed or was interrupted
      */
 
-    public static HsmManager newInstance(final String hsmType) throws IOException {
+    public static HsmManager newInstance(final String hsmType) {
         if (hsmType.equals(LUNA_HSM_TYPE)) {
             return new LunaHsmManager();
         }
