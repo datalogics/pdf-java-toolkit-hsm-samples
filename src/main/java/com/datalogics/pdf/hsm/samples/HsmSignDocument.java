@@ -160,8 +160,8 @@ public final class HsmSignDocument {
 
             // Create credentials
             final CredentialFactory credentialFactory = CredentialFactory.newInstance();
-            final PrivateKeyHolder pkh = PrivateKeyHolderFactory.newInstance().createPrivateKey(privateKey,
-                                                                                                hsmManager.getProviderName());
+            final String provider = hsmManager.getProviderName();
+            final PrivateKeyHolder pkh = PrivateKeyHolderFactory.newInstance().createPrivateKey(privateKey, provider);
             final Credentials credentials = credentialFactory.createCredentials(pkh, certChain[0], certChain);
 
             // Must be permitted to sign doc and field must be visible.
