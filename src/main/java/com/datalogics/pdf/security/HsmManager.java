@@ -4,10 +4,8 @@
 
 package com.datalogics.pdf.security;
 
-import com.adobe.pdfjt.core.credentials.Credentials;
-import com.adobe.pdfjt.core.exceptions.PDFInvalidParameterException;
-
-import java.io.IOException;
+import java.security.PrivateKey;
+import java.security.cert.X509Certificate;
 
 /**
  * The basic interface for logging into a HSM machine.
@@ -32,16 +30,27 @@ public interface HsmManager {
     void hsmLogout();
 
     /**
-     * Get the Credentials object for the HSM device.
+     * Get the Private Key object for the HSM device.
      *
      * @param password - the password for recovering the key
      * @param keyLabel - the given alias associated with the key
-     * @param certLabel - the given alias associated with the certificate
-     * @return a Credentials object used to sign documents
-     * @throws IOException an I/O operation failed or was interrupted
-     * @throws SecurityException thrown by the security manager to indicate a security violation
-     * @throws PDFInvalidParameterException one or more of the parameters passed to a method is invalid
+     * @return A private key
      */
-    Credentials getCredentials(final String password, final String keyLabel, final String certLabel)
-                    throws SecurityException, IOException, PDFInvalidParameterException;
+    PrivateKey getPrivateKey(final String password, final String keyLabel);
+
+    /**
+     * Get an array of x509 Certificates for the HSM device.
+     *
+     * @param certLabel - the given alias associated with the certificate
+     * @return X509Certificate[]
+     */
+    X509Certificate[] getCertificateChain(final String certLabel);
+
+    /**
+     * Get the HSM provider name .
+     *
+     * @return String (The Provider name)
+     */
+    String getProviderName();
+
 }
