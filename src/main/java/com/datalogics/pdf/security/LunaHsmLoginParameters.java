@@ -7,7 +7,7 @@ package com.datalogics.pdf.security;
 /**
  * This class represents login parameters that are used to login into a LunaSa HSM device.
  */
-public class LunaHsmLoginParms extends HsmLoginParms {
+public class LunaHsmLoginParameters extends HsmLoginParameters {
 
     private final String tokenLabel;
 
@@ -17,7 +17,7 @@ public class LunaHsmLoginParms extends HsmLoginParms {
      *
      * @param pswd - The password to use for the login
      */
-    public LunaHsmLoginParms(final String pswd) {
+    public LunaHsmLoginParameters(final String pswd) {
         super(pswd);
         this.tokenLabel = null;
     }
@@ -28,7 +28,7 @@ public class LunaHsmLoginParms extends HsmLoginParms {
      * @param tokenLbl - The label of the token to which to login
      * @param pswd - The password to use for the login
      */
-    public LunaHsmLoginParms(final String tokenLbl, final String pswd) {
+    public LunaHsmLoginParameters(final String tokenLbl, final String pswd) {
         super(pswd);
         this.tokenLabel = tokenLbl;
     }
