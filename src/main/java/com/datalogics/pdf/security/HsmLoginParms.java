@@ -27,5 +27,5 @@ public class HsmLoginParms {
      */
     public String getPassword() {
         return password;
-    };
+    }
 }
