@@ -86,11 +86,13 @@ public final class HsmSignDocument {
             outputUrl = new File(OUTPUT_SIGNED_PDF_PATH).toURI().toURL();
         }
 
+        if (!hsmManager.isLoggedIn()) {
         // Log in to the HSM
-        final boolean loggedIn = hsmManager.hsmLogin(new LunaHsmLoginParms(TOKEN_LABEL, PASSWORD));
+            hsmManager.hsmLogin(new LunaHsmLoginParms(TOKEN_LABEL, PASSWORD));
+        }
 
         // Report whether we successfully logged in
-        if (loggedIn) {
+        if (hsmManager.isLoggedIn()) {
             if (LOGGER.isLoggable(Level.INFO)) {
                 LOGGER.info("Logged into HSM");
             }
