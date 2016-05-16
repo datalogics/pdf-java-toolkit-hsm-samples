@@ -28,6 +28,8 @@ public final class LunaHsmManager implements HsmManager {
     private final LunaSlotManager slotManager;
     private final KeyStore lunaKeyStore;
 
+    private boolean isLoggedIn;
+
     public static final String KEYSTORE_TYPE = "Luna";
     public static final String PROVIDER_NAME = "LunaProvider";
 
@@ -75,8 +77,9 @@ public final class LunaHsmManager implements HsmManager {
             throw new IllegalArgumentException("Error while logging into the Luna HSM" + e);
         }
 
+        isLoggedIn = slotManager.isLoggedIn();
         loadKeyStore();
-        return slotManager.isLoggedIn();
+        return isLoggedIn;
     }
 
     /*
@@ -90,11 +93,21 @@ public final class LunaHsmManager implements HsmManager {
          * When you are done using the Luna HSM, it is customary to log out of the HSM to prevent unauthorized access at
          * a later point in your application.
          *
-         * Only use the LunaSlotManager.logout() method if you used one of the LunaSlotManager.login() methods for
-         * opening access to the HSM. If you use an external login method, you will need to use an external logout
-         * method.
          */
-        slotManager.logout();
+        if (isLoggedIn) {
+            slotManager.logout();
+            isLoggedIn = false;
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.datalogics.pdf.security.HsmManager#isLoggedIn()
+     */
+    @Override
+    public boolean isLoggedIn() {
+        return isLoggedIn;
     }
 
     /*
@@ -132,7 +145,7 @@ public final class LunaHsmManager implements HsmManager {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.datalogics.pdf.security.HsmManager#getProviderName()
      */
     @Override
