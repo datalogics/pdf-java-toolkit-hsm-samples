@@ -120,7 +120,7 @@ public final class LunaHsmManager implements HsmManager {
         try {
             cert = (X509Certificate) lunaKeyStore.getCertificate(certLabel);
         } catch (final KeyStoreException e) {
-            throw new SecurityException("Exception while obtaining certificate chain for LunaSa: ", e);
+            throw new SecurityException("Exception while obtaining certificate chain for LunaSA: ", e);
         }
         final X509Certificate[] certChain = new X509Certificate[1];
         certChain[0] = cert;
