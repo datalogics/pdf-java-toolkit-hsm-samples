@@ -87,7 +87,7 @@ public final class HsmSignDocument {
         }
 
         if (!hsmManager.isLoggedIn()) {
-        // Log in to the HSM
+            // Log in to the HSM
             hsmManager.hsmLogin(new LunaHsmLoginParms(TOKEN_LABEL, PASSWORD));
         }
 
@@ -97,8 +97,8 @@ public final class HsmSignDocument {
                 LOGGER.info("Logged into HSM");
             }
         } else {
-            if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.warning("Failed to log into HSM, exiting");
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.severe("Failed to log into HSM, exiting");
             }
             return;
         }
