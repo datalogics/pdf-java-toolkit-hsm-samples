@@ -12,7 +12,7 @@ import java.io.IOException;
 public final class HsmManagerFactory {
 
     /**
-     * Luna SA Hsm Type
+     * Luna SA Hsm Type.
      */
     public static final String LUNA_HSM_TYPE = "luna";
 
