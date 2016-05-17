@@ -5,7 +5,10 @@
 package com.datalogics.pdf.hsm.samples;
 
 import com.adobe.internal.io.ByteWriter;
+import com.adobe.pdfjt.core.credentials.CredentialFactory;
 import com.adobe.pdfjt.core.credentials.Credentials;
+import com.adobe.pdfjt.core.credentials.PrivateKeyHolder;
+import com.adobe.pdfjt.core.credentials.PrivateKeyHolderFactory;
 import com.adobe.pdfjt.core.exceptions.PDFException;
 import com.adobe.pdfjt.core.exceptions.PDFIOException;
 import com.adobe.pdfjt.core.license.LicenseManager;
@@ -18,13 +21,16 @@ import com.adobe.pdfjt.services.digsig.UserInfo;
 import com.adobe.pdfjt.services.digsig.cryptoprovider.JCEProvider;
 import com.adobe.pdfjt.services.digsig.spi.CryptoContext;
 
-import com.datalogics.pdf.hsm.samples.HsmManagerFactory.HsmType;
 import com.datalogics.pdf.hsm.samples.util.DocumentUtils;
 import com.datalogics.pdf.hsm.samples.util.IoUtils;
 import com.datalogics.pdf.security.HsmManager;
+import com.datalogics.pdf.security.HsmManagerFactory;
+import com.datalogics.pdf.security.LunaHsmLoginParameters;
 
 import java.io.File;
 import java.net.URL;
+import java.security.PrivateKey;
+import java.security.cert.X509Certificate;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,12 +55,13 @@ public final class HsmSignDocument {
     public static final String INPUT_UNSIGNED_PDF_PATH = "UnsignedDocument.pdf";
     public static final String OUTPUT_SIGNED_PDF_PATH = "SignedField.pdf";
 
-    private static HsmManager hsmManager = HsmManagerFactory.newInstance(HsmType.LUNA_SA_HSM);
+    private static HsmManager hsmManager;
 
     /**
      * This is a utility class, and won't be instantiated.
      */
     private HsmSignDocument() {}
+
 
     /**
      * Main program.
@@ -70,6 +77,8 @@ public final class HsmSignDocument {
         // If you are not using an evaluation version of the product you can ignore or remove this code.
         LicenseManager.setLicensePath(".");
 
+        hsmManager = HsmManagerFactory.newInstance(HsmManagerFactory.LUNA_HSM_TYPE);
+
         URL outputUrl = null;
         if (args.length > 0) {
             outputUrl = new File(args[0]).toURI().toURL();
@@ -77,22 +86,24 @@ public final class HsmSignDocument {
             outputUrl = new File(OUTPUT_SIGNED_PDF_PATH).toURI().toURL();
         }
 
-        final URL inputUrl = HsmSignDocument.class.getResource(INPUT_UNSIGNED_PDF_PATH);
-
-        // Log in to the HSM
-        final boolean loggedIn = hsmManager.hsmLogin(TOKEN_LABEL, PASSWORD);
+        if (!hsmManager.isLoggedIn()) {
+            // Log in to the HSM
+            hsmManager.hsmLogin(new LunaHsmLoginParameters(TOKEN_LABEL, PASSWORD));
+        }
 
         // Report whether we successfully logged in
-        if (loggedIn) {
+        if (hsmManager.isLoggedIn()) {
             if (LOGGER.isLoggable(Level.INFO)) {
                 LOGGER.info("Logged into HSM");
             }
         } else {
-            if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.warning("Failed to log into HSM, exiting");
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.severe("Failed to log into HSM, exiting");
             }
             return;
         }
+
+        final URL inputUrl = HsmSignDocument.class.getResource(INPUT_UNSIGNED_PDF_PATH);
 
         // Query and sign all permissible signature fields.
         signExistingSignatureFields(inputUrl, outputUrl);
@@ -144,7 +155,15 @@ public final class HsmSignDocument {
 
         ByteWriter byteWriter = null;
         try {
-            final Credentials credentials = hsmManager.getCredentials(PASSWORD, PRIVATE_KEY_LABEL, CERTIFICATE_LABEL);
+            final PrivateKey privateKey = (PrivateKey) hsmManager.getKey(PASSWORD, PRIVATE_KEY_LABEL);
+            final X509Certificate[] certChain = (X509Certificate[]) hsmManager.getCertificateChain(CERTIFICATE_LABEL);
+
+            // Create credentials
+            final CredentialFactory credentialFactory = CredentialFactory.newInstance();
+            final String provider = hsmManager.getProviderName();
+            final PrivateKeyHolder pkh = PrivateKeyHolderFactory.newInstance().createPrivateKey(privateKey, provider);
+            final Credentials credentials = credentialFactory.createCredentials(pkh, certChain[0], certChain);
+
             // Must be permitted to sign doc and field must be visible.
             if (sigField.isSigningPermitted()) {
                 if (sigField.isVisible()) {

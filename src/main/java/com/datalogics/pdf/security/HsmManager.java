@@ -4,10 +4,9 @@
 
 package com.datalogics.pdf.security;
 
-import com.adobe.pdfjt.core.credentials.Credentials;
-import com.adobe.pdfjt.core.exceptions.PDFInvalidParameterException;
+import java.security.Key;
+import java.security.cert.Certificate;
 
-import java.io.IOException;
 
 /**
  * The basic interface for logging into a HSM machine.
@@ -15,15 +14,13 @@ import java.io.IOException;
 public interface HsmManager {
 
     /**
-     * Performs a login operation to the HSM device. The login operation occurs on the given tokenLabel or the first
-     * available slot if tokenLabel is null. NOTE: tokenLabel is synonymous with partition name.
+     * Performs a login operation to the HSM device.
      *
-     * @param tokenLabel - The label of the token to which to login
-     * @param password - The password to use for the login
+     * @param parms the parameters needed to login to the device
      * @return a boolean indicating if the login was successful
      * @throws IllegalArgumentException if an argument was invalid
      */
-    boolean hsmLogin(final String tokenLabel, final String password) throws IllegalArgumentException;
+    boolean hsmLogin(final HsmLoginParameters parms);
 
     /**
      * Logs out of the default session with the HSM device.
@@ -34,16 +31,34 @@ public interface HsmManager {
     void hsmLogout();
 
     /**
-     * Get the Credentials object for the HSM device.
+     * Determines if logged in to the HSM Device.
      *
-     * @param password - the password for recovering the key
-     * @param keyLabel - the given alias associated with the key
-     * @param certLabel - the given alias associated with the certificate
-     * @return a Credentials object used to sign documents
-     * @throws IOException an I/O operation failed or was interrupted
-     * @throws SecurityException thrown by the security manager to indicate a security violation
-     * @throws PDFInvalidParameterException one or more of the parameters passed to a method is invalid
+     * @return boolean
      */
-    Credentials getCredentials(final String password, final String keyLabel, final String certLabel)
-                    throws SecurityException, IOException, PDFInvalidParameterException;
+    boolean isLoggedIn();
+
+    /**
+     * Get the Key object for the HSM device.
+     *
+     * @param password the password for recovering the key
+     * @param keyLabel the given alias associated with the key
+     * @return key
+     */
+    Key getKey(final String password, final String keyLabel);
+
+    /**
+     * Get an array of Certificates for the HSM device.
+     *
+     * @param certLabel the given alias associated with the certificate
+     * @return Certificate[]
+     */
+    Certificate[] getCertificateChain(final String certLabel);
+
+    /**
+     * Get the provider name installed by this HSM.
+     *
+     * @return the provider name
+     */
+    String getProviderName();
+
 }
