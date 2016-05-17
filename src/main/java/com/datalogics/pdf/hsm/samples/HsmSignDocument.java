@@ -155,8 +155,8 @@ public final class HsmSignDocument {
 
         ByteWriter byteWriter = null;
         try {
-            final PrivateKey privateKey = hsmManager.getPrivateKey(PASSWORD, PRIVATE_KEY_LABEL);
-            final X509Certificate[] certChain = hsmManager.getCertificateChain(CERTIFICATE_LABEL);
+            final PrivateKey privateKey = (PrivateKey) hsmManager.getKey(PASSWORD, PRIVATE_KEY_LABEL);
+            final X509Certificate[] certChain = (X509Certificate[]) hsmManager.getCertificateChain(CERTIFICATE_LABEL);
 
             // Create credentials
             final CredentialFactory credentialFactory = CredentialFactory.newInstance();
