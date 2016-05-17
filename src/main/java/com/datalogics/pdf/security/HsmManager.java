@@ -4,8 +4,9 @@
 
 package com.datalogics.pdf.security;
 
-import java.security.PrivateKey;
-import java.security.cert.X509Certificate;
+import java.security.Key;
+import java.security.cert.Certificate;
+
 
 /**
  * The basic interface for logging into a HSM machine.
@@ -37,21 +38,21 @@ public interface HsmManager {
     boolean isLoggedIn();
 
     /**
-     * Get the Private Key object for the HSM device.
+     * Get the Key object for the HSM device.
      *
      * @param password the password for recovering the key
      * @param keyLabel the given alias associated with the key
-     * @return a private key
+     * @return key
      */
-    PrivateKey getPrivateKey(final String password, final String keyLabel);
+    Key getKey(final String password, final String keyLabel);
 
     /**
-     * Get an array of x509 Certificates for the HSM device.
+     * Get an array of Certificates for the HSM device.
      *
      * @param certLabel the given alias associated with the certificate
-     * @return X509Certificate[]
+     * @return Certificate[]
      */
-    X509Certificate[] getCertificateChain(final String certLabel);
+    Certificate[] getCertificateChain(final String certLabel);
 
     /**
      * Get the provider name installed by this HSM.
