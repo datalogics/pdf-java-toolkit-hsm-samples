@@ -132,10 +132,10 @@ public final class LunaHsmManager implements HsmManager {
     /*
      * (non-Javadoc)
      *
-     * @see com.datalogics.pdf.security.HsmManager#getPrivateKey(java.lang.String, java.lang.String)
+     * @see com.datalogics.pdf.security.HsmManager#getKey(java.lang.String, java.lang.String)
      */
     @Override
-    public PrivateKey getPrivateKey(final String password, final String keyLabel) {
+    public PrivateKey getKey(final String password, final String keyLabel) {
         if (!isLoggedIn) {
             throw new SecurityException("Call the hsmLogin method to login to HSM device first.");
         }
