@@ -79,13 +79,6 @@ public final class HsmSignDocument {
 
         hsmManager = HsmManagerFactory.newInstance(HsmManagerFactory.LUNA_HSM_TYPE);
 
-        URL outputUrl = null;
-        if (args.length > 0) {
-            outputUrl = new File(args[0]).toURI().toURL();
-        } else {
-            outputUrl = new File(OUTPUT_SIGNED_PDF_PATH).toURI().toURL();
-        }
-
         if (!hsmManager.isLoggedIn()) {
             // Log in to the HSM
             hsmManager.hsmLogin(new LunaHsmLoginParameters(TOKEN_LABEL, PASSWORD));
@@ -104,6 +97,13 @@ public final class HsmSignDocument {
         }
 
         final URL inputUrl = HsmSignDocument.class.getResource(INPUT_UNSIGNED_PDF_PATH);
+
+        URL outputUrl = null;
+        if (args.length > 0) {
+            outputUrl = new File(args[0]).toURI().toURL();
+        } else {
+            outputUrl = new File(OUTPUT_SIGNED_PDF_PATH).toURI().toURL();
+        }
 
         // Query and sign all permissible signature fields.
         signExistingSignatureFields(inputUrl, outputUrl);
