@@ -58,6 +58,9 @@ dependency-reduced-pom.xml
 *.l4je
 *.l4j
 
+# Java properties files
+*.properties
+
 # Files in the archetype that should not be ignored by more general rules
 !.settings/net.sf.jautodoc.prefs
 !.settings/org.eclipse.core.resources.prefs
