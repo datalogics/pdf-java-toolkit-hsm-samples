@@ -21,11 +21,14 @@ import com.adobe.pdfjt.services.digsig.UserInfo;
 import com.adobe.pdfjt.services.digsig.cryptoprovider.JCEProvider;
 import com.adobe.pdfjt.services.digsig.spi.CryptoContext;
 
+import com.datalogics.pdf.hsm.samples.util.ConfigurationUtils;
 import com.datalogics.pdf.hsm.samples.util.DocumentUtils;
 import com.datalogics.pdf.hsm.samples.util.IoUtils;
 import com.datalogics.pdf.security.HsmManager;
 import com.datalogics.pdf.security.HsmManagerFactory;
 import com.datalogics.pdf.security.LunaHsmLoginParameters;
+
+import org.apache.commons.configuration2.Configuration;
 
 import java.io.File;
 import java.net.URL;
@@ -45,8 +48,6 @@ import java.util.logging.Logger;
 public final class HsmSignDocument {
     private static final Logger LOGGER = Logger.getLogger(HsmSignDocument.class.getName());
 
-    private static final String PASSWORD = ""; // <-- Replace this with the HSM partition password
-
     private static final String TOKEN_LABEL = null; // The HSM partition name or null
     private static final String PRIVATE_KEY_LABEL = "pdfjt-eval-key"; // The private key label/alias
     private static final String CERTIFICATE_LABEL = "pdfjt-eval-cert"; // The certificate label/alias
@@ -56,6 +57,7 @@ public final class HsmSignDocument {
     public static final String OUTPUT_SIGNED_PDF_PATH = "SignedField.pdf";
 
     private static HsmManager hsmManager;
+    private static String password;
 
     /**
      * This is a utility class, and won't be instantiated.
@@ -77,11 +79,15 @@ public final class HsmSignDocument {
         // If you are not using an evaluation version of the product you can ignore or remove this code.
         LicenseManager.setLicensePath(".");
 
+        // Retrieve the password, stored in the hsm.properties file
+        final Configuration loginConfiguration = ConfigurationUtils.getConfiguration("hsm.properties");
+        password = loginConfiguration.getString("hsm.password");
+
         hsmManager = HsmManagerFactory.newInstance(HsmManagerFactory.LUNA_HSM_TYPE);
 
         if (!hsmManager.isLoggedIn()) {
             // Log in to the HSM
-            hsmManager.hsmLogin(new LunaHsmLoginParameters(TOKEN_LABEL, PASSWORD));
+            hsmManager.hsmLogin(new LunaHsmLoginParameters(TOKEN_LABEL, password));
         }
 
         // Report whether we successfully logged in
@@ -155,7 +161,7 @@ public final class HsmSignDocument {
 
         ByteWriter byteWriter = null;
         try {
-            final PrivateKey privateKey = (PrivateKey) hsmManager.getKey(PASSWORD, PRIVATE_KEY_LABEL);
+            final PrivateKey privateKey = (PrivateKey) hsmManager.getKey(password, PRIVATE_KEY_LABEL);
             final X509Certificate[] certChain = (X509Certificate[]) hsmManager.getCertificateChain(CERTIFICATE_LABEL);
 
             // Create credentials
