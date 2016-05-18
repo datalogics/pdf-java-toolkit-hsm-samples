@@ -16,7 +16,7 @@ import org.apache.commons.configuration2.io.FileLocationStrategy;
 import org.apache.commons.configuration2.io.HomeDirectoryLocationStrategy;
 import org.apache.commons.configuration2.io.ProvidedURLLocationStrategy;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -31,16 +31,20 @@ public final class ConfigurationUtils {
     /**
      * Get a configuration object.
      *
+     * <p>
+     * You can specify a path to the configuration file; by default, it will search in the current working directory and
+     * the user's home directory, in that order.
+     *
      * @param configurationFile name of configuration file to load
      * @return a Configuration object
      * @throws ConfigurationException if configuration file could not be found
      */
     public static Configuration getConfiguration(final String configurationFile) throws ConfigurationException {
         final Parameters parameters = new Parameters();
-        final FileBasedConfigurationBuilder<FileBasedConfiguration> builder = new FileBasedConfigurationBuilder<FileBasedConfiguration>(PropertiesConfiguration.class)
-                                                                                                                                                                      .configure(parameters.fileBased()
-                                                                                                                                                                                           .setLocationStrategy(buildDefaultLocationStrategy())
-                                                                                                                                                                                           .setFileName(configurationFile));
+        final FileBasedConfigurationBuilder<FileBasedConfiguration> builder = newPropertiesBuilder();
+        builder.configure(parameters.fileBased()
+                                    .setLocationStrategy(buildDefaultLocationStrategy())
+                                    .setFileName(configurationFile));
         return builder.getConfiguration();
     }
 
@@ -58,10 +62,13 @@ public final class ConfigurationUtils {
      * @return a strategy for finding a configuration file
      */
     private static FileLocationStrategy buildDefaultLocationStrategy() {
-        final List<FileLocationStrategy> strategies = new ArrayList<FileLocationStrategy>();
-        strategies.add(new ProvidedURLLocationStrategy());
-        strategies.add(new BasePathLocationStrategy());
-        strategies.add(new HomeDirectoryLocationStrategy());
+        final List<FileLocationStrategy> strategies = Arrays.asList(new ProvidedURLLocationStrategy(),
+                                                                    new BasePathLocationStrategy(),
+                                                                    new HomeDirectoryLocationStrategy());
         return new CombinedLocationStrategy(strategies);
+    }
+
+    private static FileBasedConfigurationBuilder<FileBasedConfiguration> newPropertiesBuilder() {
+        return new FileBasedConfigurationBuilder<FileBasedConfiguration>(PropertiesConfiguration.class);
     }
 }
