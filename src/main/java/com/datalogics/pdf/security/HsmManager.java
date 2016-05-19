@@ -32,11 +32,11 @@ public interface HsmManager {
     void hsmLogout();
 
     /**
-     * Determines if logged in to the HSM Device.
+     * Get the connection state of the HSM Manager.
      *
-     * @return boolean
+     * @return ConnectionState
      */
-    boolean isLoggedIn();
+    ConnectionState getConnectionState();
 
     /**
      * Get the Key object for the HSM device.
@@ -62,4 +62,10 @@ public interface HsmManager {
      */
     String getProviderName();
 
+    /**
+     * Represents the Connection state with the HSM device.
+     */
+    enum ConnectionState {
+        READY, CONNECTED, DISCONNECTED
+    }
 }
