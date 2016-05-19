@@ -21,9 +21,9 @@ import com.adobe.pdfjt.services.digsig.UserInfo;
 import com.adobe.pdfjt.services.digsig.cryptoprovider.JCEProvider;
 import com.adobe.pdfjt.services.digsig.spi.CryptoContext;
 
-import com.datalogics.pdf.hsm.samples.util.ConfigurationUtils;
 import com.datalogics.pdf.hsm.samples.util.DocumentUtils;
 import com.datalogics.pdf.hsm.samples.util.IoUtils;
+import com.datalogics.pdf.hsm.samples.util.SampleConfigurationUtils;
 import com.datalogics.pdf.security.HsmManager;
 import com.datalogics.pdf.security.HsmManagerFactory;
 import com.datalogics.pdf.security.LunaHsmLoginParameters;
@@ -83,7 +83,7 @@ public final class HsmSignDocument {
         LicenseManager.setLicensePath(".");
 
         // Retrieve the password, stored in the hsm.properties file
-        final Configuration loginConfiguration = ConfigurationUtils.getConfiguration(PROPERTIES_FILE);
+        final Configuration loginConfiguration = SampleConfigurationUtils.getConfiguration(PROPERTIES_FILE);
         password = loginConfiguration.getString(PASSWORD_PROPERTY);
 
         hsmManager = HsmManagerFactory.newInstance(HsmManagerFactory.LUNA_HSM_TYPE);

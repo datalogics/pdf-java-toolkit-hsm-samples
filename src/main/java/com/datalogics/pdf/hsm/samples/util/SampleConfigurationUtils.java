@@ -23,11 +23,11 @@ import java.util.List;
 /**
  * Helper class to provide Apache Configuration objects to clients.
  */
-public final class ConfigurationUtils {
+public final class SampleConfigurationUtils {
     /**
      * This is a utility class, and won't be instantiated.
      */
-    private ConfigurationUtils() {}
+    private SampleConfigurationUtils() {}
 
     /**
      * Get a configuration object.
