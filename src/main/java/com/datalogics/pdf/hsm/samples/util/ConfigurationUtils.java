@@ -16,6 +16,7 @@ import org.apache.commons.configuration2.io.FileLocationStrategy;
 import org.apache.commons.configuration2.io.HomeDirectoryLocationStrategy;
 import org.apache.commons.configuration2.io.ProvidedURLLocationStrategy;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,15 +38,19 @@ public final class ConfigurationUtils {
      *
      * @param configurationFile name of configuration file to load
      * @return a Configuration object
-     * @throws ConfigurationException if configuration file could not be found
+     * @throws IOException if configuration file could not be loaded
      */
-    public static Configuration getConfiguration(final String configurationFile) throws ConfigurationException {
-        final Parameters parameters = new Parameters();
-        final FileBasedConfigurationBuilder<FileBasedConfiguration> builder = newPropertiesBuilder();
-        builder.configure(parameters.fileBased()
-                                    .setLocationStrategy(buildDefaultLocationStrategy())
-                                    .setFileName(configurationFile));
-        return builder.getConfiguration();
+    public static Configuration getConfiguration(final String configurationFile) throws IOException {
+        try {
+            final Parameters parameters = new Parameters();
+            final FileBasedConfigurationBuilder<FileBasedConfiguration> builder = newPropertiesBuilder();
+            builder.configure(parameters.fileBased()
+                                        .setLocationStrategy(buildDefaultLocationStrategy())
+                                        .setFileName(configurationFile));
+            return builder.getConfiguration();
+        } catch (final ConfigurationException e) {
+            throw new IOException("Could not load configuration file '" + configurationFile + "'", e);
+        }
     }
 
     /**
