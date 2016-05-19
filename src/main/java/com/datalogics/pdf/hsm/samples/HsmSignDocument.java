@@ -53,6 +53,9 @@ public final class HsmSignDocument {
     private static final String CERTIFICATE_LABEL = "pdfjt-eval-cert"; // The certificate label/alias
     private static final String DIGESTER_ALG = "SHA256";
 
+    private static final String PROPERTIES_FILE = "hsm.properties";
+    private static final String PASSWORD_PROPERTY = "hsm.password";
+
     public static final String INPUT_UNSIGNED_PDF_PATH = "UnsignedDocument.pdf";
     public static final String OUTPUT_SIGNED_PDF_PATH = "SignedField.pdf";
 
@@ -80,8 +83,8 @@ public final class HsmSignDocument {
         LicenseManager.setLicensePath(".");
 
         // Retrieve the password, stored in the hsm.properties file
-        final Configuration loginConfiguration = ConfigurationUtils.getConfiguration("hsm.properties");
-        password = loginConfiguration.getString("hsm.password");
+        final Configuration loginConfiguration = ConfigurationUtils.getConfiguration(PROPERTIES_FILE);
+        password = loginConfiguration.getString(PASSWORD_PROPERTY);
 
         hsmManager = HsmManagerFactory.newInstance(HsmManagerFactory.LUNA_HSM_TYPE);
 
