@@ -16,6 +16,15 @@ evaluating Datalogics PDF Java Toolkit.
 * To use these samples, you will need an HSM device, and the associated JARs and development software provided by the HSM supplier. Currently supported HSM devices:
   * [_SafeNet Network/LunaSA HSM_](http://www.safenet-inc.com/data-encryption/hardware-security-modules-hsms/luna-hsms-key-management/luna-sa-network-hsm/)
 
+## Providing an HSM password
+You will need to supply a login password for your HSM device. The sample is written to retrieve the password from a properties file. This file is not included in the repo—you will need to add it to your system.
+
+By default, this file is named `hsm.properties` and contains a single entry:
+
+    hsm.password=SPAAbQDhVOzF+t9ANEg
+
+It will search for this file in the current working directory, or the user's home directory, in that order.
+
 ## Using with an evaluation version of PDFJT
 
 The evaluation version of PDF Java Toolkit has license management, and a different artifact name: ``pdfjt-lm``. There's also a corresponding ``talkeetna-lm`` which similarly depends on ``pdfjt-lm``. Switching to use these versions of PDF Java Toolkit and Talkeetna is provided with Maven profiles.
