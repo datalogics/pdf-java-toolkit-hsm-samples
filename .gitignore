@@ -69,6 +69,7 @@ dependency-reduced-pom.xml
 !.settings/org.eclipse.m2e.core.prefs
 !src/main/resources/com/datalogics/pdf/hsm/samples/pdfjavatoolkit-ds.pdf
 !user-documentation.pdf
+!src/test/resources/com/datalogics/pdf/hsm/samples/util/test.properties
 
 ### OSX ###
 .DS_Store
