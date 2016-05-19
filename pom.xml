@@ -103,9 +103,9 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-     <groupId>com.safenetinc.luna</groupId>
-     <artifactId>provider</artifactId>
-     <version>5.2.0</version>
+      <groupId>com.safenetinc.luna</groupId>
+      <artifactId>provider</artifactId>
+      <version>5.2.0</version>
     </dependency>
   </dependencies>
   <build>
@@ -618,4 +618,5 @@
       </pluginRepositories>
     </profile>
   </profiles>
-</project><!-- vim: set et sts=2 sw=2 ts=2 : -->
+</project>
+<!-- vim: set et sts=2 sw=2 ts=2 : -->
