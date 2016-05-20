@@ -17,10 +17,9 @@ public interface HsmManager {
      * Performs a login operation to the HSM device.
      *
      * @param parms the parameters needed to login to the device
-     * @return a boolean indicating if the login was successful
      * @throws IllegalArgumentException if an argument was invalid
      */
-    boolean hsmLogin(final HsmLoginParameters parms);
+    void hsmLogin(final HsmLoginParameters parms);
 
     /**
      * Logs out of the default session with the HSM device.

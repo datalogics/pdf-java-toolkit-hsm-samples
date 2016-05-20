@@ -54,7 +54,7 @@ public final class LunaHsmManager implements HsmManager {
      * @see com.datalogics.pdf.hsm.samples.HsmManager#hsmLogin(java.lang.String, java.lang.String)
      */
     @Override
-    public boolean hsmLogin(final HsmLoginParameters parms) {
+    public void hsmLogin(final HsmLoginParameters parms) {
         if (!(parms instanceof LunaHsmLoginParameters)) {
             throw new IllegalArgumentException("Must pass a instanceof LunaHsmLoginParms "
                                                + "to hsmLogin for LunaHsmManager");
@@ -78,7 +78,6 @@ public final class LunaHsmManager implements HsmManager {
             state = ConnectionState.CONNECTED;
         }
         loadKeyStore();
-        return slotManager.isLoggedIn();
     }
 
     /*
