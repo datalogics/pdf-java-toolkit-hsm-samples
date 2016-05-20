@@ -8,10 +8,12 @@ import static org.junit.Assert.assertEquals;
 
 import org.apache.commons.configuration2.Configuration;
 import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -30,6 +32,11 @@ public class SampleConfigurationUtilsTest {
     @Rule
     public ExpectedException expected = ExpectedException.none();
 
+    @BeforeClass
+    public static void setUp() throws IOException {
+        createFakeUserHomeDirectory();
+    }
+
     @AfterClass
     public static void cleanUp() throws IOException {
         removePropertiesFileFromAllDirectories();
@@ -38,6 +45,12 @@ public class SampleConfigurationUtilsTest {
     /*
      * Helper methods
      */
+    private static void createFakeUserHomeDirectory() throws IOException {
+        final File fakeUserHomeDir = new File(new File(new File("target"), "test-output"), "fake-user-home-dir");
+        Files.createDirectories(fakeUserHomeDir.toPath());
+        System.setProperty("user.home", fakeUserHomeDir.getCanonicalPath());
+    }
+
     private static Path getCurrentWorkingDirectoryPath() {
         final Path currentDir = Paths.get(System.getProperty("user.dir"));
         return currentDir.resolve(TEST_PROPERTIES_FILE);
