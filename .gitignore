@@ -58,6 +58,9 @@ dependency-reduced-pom.xml
 *.l4je
 *.l4j
 
+# Java properties files
+*.properties
+
 # Files in the archetype that should not be ignored by more general rules
 !.settings/net.sf.jautodoc.prefs
 !.settings/org.eclipse.core.resources.prefs
@@ -66,6 +69,7 @@ dependency-reduced-pom.xml
 !.settings/org.eclipse.m2e.core.prefs
 !src/main/resources/com/datalogics/pdf/hsm/samples/pdfjavatoolkit-ds.pdf
 !user-documentation.pdf
+!src/test/resources/com/datalogics/pdf/hsm/samples/util/test.properties
 
 ### OSX ###
 .DS_Store
