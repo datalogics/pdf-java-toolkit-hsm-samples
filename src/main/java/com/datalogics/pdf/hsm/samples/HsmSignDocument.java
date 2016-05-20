@@ -25,6 +25,7 @@ import com.datalogics.pdf.hsm.samples.util.DocumentUtils;
 import com.datalogics.pdf.hsm.samples.util.IoUtils;
 import com.datalogics.pdf.hsm.samples.util.SampleConfigurationUtils;
 import com.datalogics.pdf.security.HsmManager;
+import com.datalogics.pdf.security.HsmManager.ConnectionState;
 import com.datalogics.pdf.security.HsmManagerFactory;
 import com.datalogics.pdf.security.LunaHsmLoginParameters;
 
@@ -88,14 +89,14 @@ public final class HsmSignDocument {
         hsmManager = HsmManagerFactory.newInstance(HsmManagerFactory.LUNA_HSM_TYPE);
 
         if (hsmManager.getConnectionState()
-                      .equals(HsmManager.ConnectionState.READY)) {
+                      .equals(ConnectionState.READY)) {
             // Log in to the HSM
             hsmManager.hsmLogin(new LunaHsmLoginParameters(TOKEN_LABEL, password));
         }
 
         // Report whether we successfully logged in
         if (hsmManager.getConnectionState()
-                      .equals(HsmManager.ConnectionState.CONNECTED)) {
+                      .equals(ConnectionState.CONNECTED)) {
             LOGGER.info("Logged into HSM");
         } else {
             LOGGER.severe("Failed to log into HSM, exiting");
