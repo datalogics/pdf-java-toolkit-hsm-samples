@@ -26,7 +26,8 @@ public interface HsmManager {
      * Logs out of the default session with the HSM device.
      *
      * <p>
-     * This method should be called only if you have called {@link hsmLogin} to establish a login session.
+     * This method should be called only if you have called {@link HsmManager#hsmLogin(HsmLoginParameters)} to establish
+     * a login session.
      */
     void hsmLogout();
 
