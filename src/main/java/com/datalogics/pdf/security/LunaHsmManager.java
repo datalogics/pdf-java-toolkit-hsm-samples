@@ -22,11 +22,6 @@ import java.security.cert.X509Certificate;
 
 /**
  * This class allows for connecting to a Luna SA Hsm Device.
- *
- * <p>
- * Note: Once an instance of LunaHsmManager goes into a
- * {@link com.datalogics.pdf.security.HsmManager.ConnectionState#DISCONNECTED} state during logout from the LunaSA you
- * will need to create a new instance of this class if you need to login to the LunaSA device again.
  */
 public final class LunaHsmManager implements HsmManager {
 

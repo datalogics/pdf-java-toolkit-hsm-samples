@@ -10,6 +10,12 @@ import java.security.cert.Certificate;
 
 /**
  * The basic interface for logging into a HSM machine.
+ *
+ * <p>
+ * Note: Once an instance of HsmManager goes into a
+ * {@link com.datalogics.pdf.security.HsmManager.ConnectionState#DISCONNECTED} state during logout from the HSM you will
+ * need to create a new instance of this class if you need to login to the HSM device again.
+ *
  */
 public interface HsmManager {
 
