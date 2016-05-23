@@ -25,9 +25,9 @@ import java.security.cert.X509Certificate;
  */
 public final class LunaHsmManager implements HsmManager {
 
-    private final LunaSlotManager slotManager;
+    private LunaSlotManager slotManager;
     private KeyStore lunaKeyStore;
-    private boolean isLoggedIn;
+    private ConnectionState state;
 
     public static final String KEYSTORE_TYPE = "Luna";
     public static final String PROVIDER_NAME = "LunaProvider";
@@ -40,6 +40,7 @@ public final class LunaHsmManager implements HsmManager {
         super();
         slotManager = LunaSlotManager.getInstance();
         initializeProvider();
+        state = ConnectionState.READY;
     }
 
     /*
@@ -48,21 +49,16 @@ public final class LunaHsmManager implements HsmManager {
      * @see com.datalogics.pdf.hsm.samples.HsmManager#hsmLogin(java.lang.String, java.lang.String)
      */
     @Override
-    public boolean hsmLogin(final HsmLoginParameters parms) {
+    public void hsmLogin(final HsmLoginParameters parms) {
         if (!(parms instanceof LunaHsmLoginParameters)) {
             throw new IllegalArgumentException("Must pass a instanceof LunaHsmLoginParms "
-                                               + "to hsmLogin for LunaHsmManager.");
+                                               + "to hsmLogin for LunaHsmManager");
         }
 
-        final String password = parms.getPassword();
-        // Check for non-null, non zero length password
-        if (password == null) {
-            throw new IllegalArgumentException("Password must not be null");
-        } else if (password.length() <= 0) {
-            throw new IllegalArgumentException("Password must not be zero length");
-        }
+        checkLoginAbility(parms);
 
         final String tokenLabel = ((LunaHsmLoginParameters) parms).getTokenLabel();
+        final String password = parms.getPassword();
         try {
             if (tokenLabel == null) {
                 slotManager.login(password);
@@ -73,9 +69,10 @@ public final class LunaHsmManager implements HsmManager {
             throw new IllegalArgumentException("Error while logging into the Luna HSM" + e);
         }
 
-        isLoggedIn = slotManager.isLoggedIn();
+        if (slotManager.isLoggedIn()) {
+            state = ConnectionState.CONNECTED;
+        }
         loadKeyStore();
-        return isLoggedIn;
     }
 
     /*
@@ -90,20 +87,21 @@ public final class LunaHsmManager implements HsmManager {
          * a later point in your application.
          *
          */
-        if (isLoggedIn) {
+        if (state.equals(ConnectionState.CONNECTED)) {
             slotManager.logout();
-            isLoggedIn = false;
+            state = ConnectionState.DISCONNECTED;
+            cleanUpResources();
         }
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see com.datalogics.pdf.security.HsmManager#isLoggedIn()
+     * @see com.datalogics.pdf.security.HsmManager#getConnectionState()
      */
     @Override
-    public boolean isLoggedIn() {
-        return isLoggedIn;
+    public ConnectionState getConnectionState() {
+        return state;
     }
 
     /*
@@ -113,7 +111,7 @@ public final class LunaHsmManager implements HsmManager {
      */
     @Override
     public X509Certificate[] getCertificateChain(final String certLabel) {
-        if (!isLoggedIn) {
+        if (!state.equals(ConnectionState.CONNECTED)) {
             throw new SecurityException("Call the hsmLogin method to login to HSM device first.");
         }
 
@@ -136,7 +134,7 @@ public final class LunaHsmManager implements HsmManager {
      */
     @Override
     public PrivateKey getKey(final String password, final String keyLabel) {
-        if (!isLoggedIn) {
+        if (!state.equals(ConnectionState.CONNECTED)) {
             throw new SecurityException("Call the hsmLogin method to login to HSM device first.");
         }
         try {
@@ -156,6 +154,26 @@ public final class LunaHsmManager implements HsmManager {
         return PROVIDER_NAME;
     }
 
+    private void checkLoginAbility(final HsmLoginParameters parms) {
+        if (!state.equals(ConnectionState.READY)) {
+            throw new IllegalStateException("HsmManager not in a ready to login state, "
+                                            + "create a new HsmManager instance");
+        }
+
+        final String password = parms.getPassword();
+        // Check for non-null, non zero length password
+        if (password == null) {
+            throw new IllegalArgumentException("Password must not be null");
+        } else if (password.length() <= 0) {
+            throw new IllegalArgumentException("Password must not be zero length");
+        }
+    }
+
+    private void cleanUpResources() {
+        slotManager = null;
+        lunaKeyStore = null;
+    }
+
     private void initializeProvider() {
         // Add the Luna Security Provider if it is not already in the list of
         // Java Security Providers
@@ -165,7 +183,7 @@ public final class LunaHsmManager implements HsmManager {
     }
 
     private void loadKeyStore() {
-        if (!isLoggedIn) {
+        if (!state.equals(ConnectionState.CONNECTED)) {
             throw new SecurityException("Call the hsmLogin method to login to HSM device first.");
         }
         try {

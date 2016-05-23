@@ -25,6 +25,7 @@ import com.datalogics.pdf.hsm.samples.util.DocumentUtils;
 import com.datalogics.pdf.hsm.samples.util.IoUtils;
 import com.datalogics.pdf.hsm.samples.util.SampleConfigurationUtils;
 import com.datalogics.pdf.security.HsmManager;
+import com.datalogics.pdf.security.HsmManager.ConnectionState;
 import com.datalogics.pdf.security.HsmManagerFactory;
 import com.datalogics.pdf.security.LunaHsmLoginParameters;
 
@@ -35,7 +36,6 @@ import java.net.URL;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.Iterator;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -88,20 +88,18 @@ public final class HsmSignDocument {
 
         hsmManager = HsmManagerFactory.newInstance(HsmManagerFactory.LUNA_HSM_TYPE);
 
-        if (!hsmManager.isLoggedIn()) {
+        if (hsmManager.getConnectionState()
+                      .equals(ConnectionState.READY)) {
             // Log in to the HSM
             hsmManager.hsmLogin(new LunaHsmLoginParameters(TOKEN_LABEL, password));
         }
 
         // Report whether we successfully logged in
-        if (hsmManager.isLoggedIn()) {
-            if (LOGGER.isLoggable(Level.INFO)) {
-                LOGGER.info("Logged into HSM");
-            }
+        if (hsmManager.getConnectionState()
+                      .equals(ConnectionState.CONNECTED)) {
+            LOGGER.info("Logged into HSM");
         } else {
-            if (LOGGER.isLoggable(Level.SEVERE)) {
-                LOGGER.severe("Failed to log into HSM, exiting");
-            }
+            LOGGER.severe("Failed to log into HSM, exiting");
             return;
         }
 

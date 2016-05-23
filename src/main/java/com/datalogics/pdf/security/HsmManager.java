@@ -10,6 +10,12 @@ import java.security.cert.Certificate;
 
 /**
  * The basic interface for logging into a HSM machine.
+ *
+ * <p>
+ * Note: Once an instance of HsmManager goes into a
+ * {@link com.datalogics.pdf.security.HsmManager.ConnectionState#DISCONNECTED} state during logout from the HSM you will
+ * need to create a new instance of this class if you need to login to the HSM device again.
+ *
  */
 public interface HsmManager {
 
@@ -17,10 +23,9 @@ public interface HsmManager {
      * Performs a login operation to the HSM device.
      *
      * @param parms the parameters needed to login to the device
-     * @return a boolean indicating if the login was successful
      * @throws IllegalArgumentException if an argument was invalid
      */
-    boolean hsmLogin(final HsmLoginParameters parms);
+    void hsmLogin(final HsmLoginParameters parms);
 
     /**
      * Logs out of the default session with the HSM device.
@@ -32,11 +37,11 @@ public interface HsmManager {
     void hsmLogout();
 
     /**
-     * Determines if logged in to the HSM Device.
+     * Get the connection state of the HSM Manager.
      *
-     * @return boolean
+     * @return ConnectionState
      */
-    boolean isLoggedIn();
+    ConnectionState getConnectionState();
 
     /**
      * Get the Key object for the HSM device.
@@ -62,4 +67,10 @@ public interface HsmManager {
      */
     String getProviderName();
 
+    /**
+     * Represents the Connection state with the HSM device.
+     */
+    enum ConnectionState {
+        READY, CONNECTED, DISCONNECTED
+    }
 }
