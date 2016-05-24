@@ -8,10 +8,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import com.datalogics.pdf.hsm.samples.util.LogRecordListCollector;
-import com.datalogics.pdf.security.HsmLoginParameters;
 import com.datalogics.pdf.security.HsmManager;
 
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -20,15 +18,13 @@ import org.junit.rules.ExpectedException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.security.Key;
-import java.security.cert.Certificate;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 /**
- * Unit tests for the HsmSignDocument class.
+ * Unit tests simulating an unconnected HSM device.
  */
 public class UnconnectedHsmTest {
     static final String FILE_NAME = "SignedField.pdf";
@@ -37,7 +33,7 @@ public class UnconnectedHsmTest {
     private static URL inputUrl;
     private static URL outputUrl;
     private static File outputFile;
-    private HsmManager unconnectedHsmManager;
+    private static HsmManager unconnectedHsmManager;
 
     @Rule
     public ExpectedException expected = ExpectedException.none();
@@ -54,20 +50,9 @@ public class UnconnectedHsmTest {
 
         // The complete file name will be set in the HsmSignDocument class.
         outputUrl = outputFile.toURI().toURL();
-    }
 
-    /**
-     * Create an unconnected HSM device.
-     */
-    @Before
-    public void createUnconnectedHsm() {
         // Create an unconnected HsmManager
-        unconnectedHsmManager = new MockHsmManager() {
-            @Override
-            public ConnectionState getConnectionState() {
-                return ConnectionState.READY;
-            }
-        };
+        unconnectedHsmManager = new UnconnectedHsmManager();
     }
 
     @Test
@@ -107,62 +92,13 @@ public class UnconnectedHsmTest {
         assertFalse(outputFile.getPath() + " must not exist after run", outputFile.exists());
     }
 
-    private class MockHsmManager implements HsmManager {
-        /*
-         * (non-Javadoc)
-         *
-         * @see com.datalogics.pdf.security.HsmManager#hsmLogin(com.datalogics.pdf.security.HsmLoginParameters)
-         */
-        @Override
-        public void hsmLogin(final HsmLoginParameters parms) {}
-
-        /*
-         * (non-Javadoc)
-         *
-         * @see com.datalogics.pdf.security.HsmManager#hsmLogout()
-         */
-        @Override
-        public void hsmLogout() {}
-
-        /*
-         * (non-Javadoc)
-         *
-         * @see com.datalogics.pdf.security.HsmManager#getConnectionState()
-         */
+    /*
+     * An HsmManager which is always unconnected.
+     */
+    private static class UnconnectedHsmManager extends AbstractHsmManager {
         @Override
         public ConnectionState getConnectionState() {
-            return null;
+            return ConnectionState.READY;
         }
-
-        /*
-         * (non-Javadoc)
-         *
-         * @see com.datalogics.pdf.security.HsmManager#getKey(java.lang.String, java.lang.String)
-         */
-        @Override
-        public Key getKey(final String password, final String keyLabel) {
-            return null;
-        }
-
-        /*
-         * (non-Javadoc)
-         *
-         * @see com.datalogics.pdf.security.HsmManager#getCertificateChain(java.lang.String)
-         */
-        @Override
-        public Certificate[] getCertificateChain(final String certLabel) {
-            return new Certificate[0];
-        }
-
-        /*
-         * (non-Javadoc)
-         *
-         * @see com.datalogics.pdf.security.HsmManager#getProviderName()
-         */
-        @Override
-        public String getProviderName() {
-            return null;
-        }
-
     }
 }
