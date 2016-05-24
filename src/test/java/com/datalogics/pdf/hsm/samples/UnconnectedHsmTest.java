@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 /**
  * Unit tests for the HsmSignDocument class.
  */
-public class HsmSignDocumentTest extends SampleTest {
+public class UnconnectedHsmTest extends SampleTest {
     static final String FILE_NAME = "SignedField.pdf";
     static final String QUALIFIED_SIGNATURE_FIELD_NAME = "Approver";
 
