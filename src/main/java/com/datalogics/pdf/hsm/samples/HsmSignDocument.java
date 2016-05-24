@@ -138,7 +138,7 @@ public final class HsmSignDocument {
             if (LOGGER.isLoggable(Level.SEVERE)) {
                 LOGGER.severe("HsmManager is not connected to HSM device.");
             }
-            return;
+            throw new IllegalStateException("HsmManager is not connected to HSM device.");
         }
 
         PDFDocument pdfDoc = null;
