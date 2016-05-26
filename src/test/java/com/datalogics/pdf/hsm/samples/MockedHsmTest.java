@@ -82,8 +82,6 @@ public class MockedHsmTest extends SampleTest {
         final Logger logger = Logger.getLogger(HsmSignDocument.class.getName());
         try (LogRecordListCollector collector = new LogRecordListCollector(logger, logRecords)) {
             HsmSignDocument.signExistingSignatureFields(connectedHsmManager, inputUrl, outputUrl);
-        } catch (final IllegalStateException e) {
-            // Expected exception
         }
 
         // Verify that we got the expected log message
@@ -95,11 +93,7 @@ public class MockedHsmTest extends SampleTest {
 
     @Test
     public void outputFileIsGenerated() throws Exception {
-        try {
-            HsmSignDocument.signExistingSignatureFields(connectedHsmManager, inputUrl, outputUrl);
-        } catch (final IllegalStateException e) {
-            // Expected exception
-        }
+        HsmSignDocument.signExistingSignatureFields(connectedHsmManager, inputUrl, outputUrl);
 
         // Verify the Output file exists.
         assertTrue(outputFile.getPath() + " must exist after run", outputFile.exists());
