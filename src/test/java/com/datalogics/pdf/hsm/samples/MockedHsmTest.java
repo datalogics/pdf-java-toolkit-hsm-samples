@@ -11,9 +11,16 @@ import com.adobe.pdfjt.core.credentials.PrivateKeyHolder;
 import com.adobe.pdfjt.core.credentials.PrivateKeyHolderFactory;
 import com.adobe.pdfjt.core.credentials.impl.ByteArrayKeyHolder;
 import com.adobe.pdfjt.core.credentials.impl.utils.CertUtils;
+import com.adobe.pdfjt.core.exceptions.PDFIOException;
+import com.adobe.pdfjt.core.exceptions.PDFInvalidDocumentException;
+import com.adobe.pdfjt.core.exceptions.PDFSecurityException;
+import com.adobe.pdfjt.pdf.document.PDFDocument;
+import com.adobe.pdfjt.services.digsig.SignatureFieldInterface;
+import com.adobe.pdfjt.services.digsig.SignatureManager;
 
 import com.datalogics.pdf.hsm.samples.mock.AbstractHsmManager;
 import com.datalogics.pdf.hsm.samples.mock.MockProvider;
+import com.datalogics.pdf.hsm.samples.util.DocumentUtils;
 import com.datalogics.pdf.hsm.samples.util.LogRecordListCollector;
 import com.datalogics.pdf.security.HsmManager;
 
@@ -32,6 +39,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
@@ -43,7 +51,8 @@ public class MockedHsmTest extends SampleTest {
     private static final Logger LOGGER = Logger.getLogger(MockedHsmTest.class.getName());
 
     static final String FILE_NAME = "SignedField.pdf";
-    static final String MESSAGE = "Fully Qualified Name: Approver";
+    static final String QUALIFIED_SIGNATURE_FIELD_NAME = "Approver";
+    static final String LOG_MESSAGE = "Fully Qualified Name: " + QUALIFIED_SIGNATURE_FIELD_NAME;
 
     private static URL inputUrl;
     private static URL outputUrl;
@@ -80,7 +89,7 @@ public class MockedHsmTest extends SampleTest {
         // Verify that we got the expected log message
         assertEquals("Must have one log record", 1, logRecords.size());
         final LogRecord logRecord = logRecords.get(0);
-        assertEquals(MESSAGE, logRecord.getMessage());
+        assertEquals(LOG_MESSAGE, logRecord.getMessage());
         assertEquals(Level.INFO, logRecord.getLevel());
     }
 
@@ -94,6 +103,45 @@ public class MockedHsmTest extends SampleTest {
 
         // Verify the Output file exists.
         assertTrue(outputFile.getPath() + " must exist after run", outputFile.exists());
+    }
+
+    @Test
+    public void signatureIsValid() throws Exception {
+        try {
+            HsmSignDocument.signExistingSignatureFields(connectedHsmManager, inputUrl, outputUrl);
+        } catch (final IllegalStateException e) {
+            // Expected exception
+        }
+
+        final PDFDocument doc = DocumentUtils.openPdfDocument(outputUrl);
+
+        try {
+            // Make sure that Signature field is signed.
+            final SignatureFieldInterface sigField = getSignedSignatureField(doc);
+            assertTrue("Signature field must be signed", sigField.isSigned());
+            assertTrue("Signature field must be visible", sigField.isVisible());
+            assertEquals("Qualified field names must match", QUALIFIED_SIGNATURE_FIELD_NAME,
+                         sigField.getQualifiedName());
+
+        } finally {
+            doc.close();
+        }
+    }
+
+    /*
+     * Retrieve the first signed signature field.
+     */
+    private static SignatureFieldInterface getSignedSignatureField(final PDFDocument doc)
+                    throws PDFInvalidDocumentException, PDFIOException, PDFSecurityException {
+        // Set up a signature service and get the first signature field.
+        final SignatureManager sigService = SignatureManager.newInstance(doc);
+        if (sigService.hasSignedSignatureFields()) {
+            final Iterator<SignatureFieldInterface> iter = sigService.getDocSignatureFieldIterator();
+            if (iter.hasNext()) {
+                return iter.next();
+            }
+        }
+        return null;
     }
 
     /*
