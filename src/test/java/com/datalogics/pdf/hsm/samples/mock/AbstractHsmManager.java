@@ -2,7 +2,7 @@
  * Copyright 2016 Datalogics Inc.
  */
 
-package com.datalogics.pdf.hsm.samples;
+package com.datalogics.pdf.hsm.samples.mock;
 
 import com.datalogics.pdf.security.HsmLoginParameters;
 import com.datalogics.pdf.security.HsmManager;
@@ -17,7 +17,7 @@ import java.security.cert.Certificate;
  * This implementation provides dummy implementations of the required APIs; tests should extend and override required
  * APIs as necessary.
  */
-abstract class AbstractHsmManager implements HsmManager {
+public abstract class AbstractHsmManager implements HsmManager {
 
     /* (non-Javadoc)
      * @see com.datalogics.pdf.security.HsmManager#hsmLogin(com.datalogics.pdf.security.HsmLoginParameters)

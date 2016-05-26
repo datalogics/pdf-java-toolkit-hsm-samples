@@ -12,6 +12,7 @@ import com.adobe.pdfjt.core.credentials.PrivateKeyHolderFactory;
 import com.adobe.pdfjt.core.credentials.impl.ByteArrayKeyHolder;
 import com.adobe.pdfjt.core.credentials.impl.utils.CertUtils;
 
+import com.datalogics.pdf.hsm.samples.mock.AbstractHsmManager;
 import com.datalogics.pdf.hsm.samples.mock.MockProvider;
 import com.datalogics.pdf.hsm.samples.util.LogRecordListCollector;
 import com.datalogics.pdf.security.HsmManager;
@@ -96,7 +97,7 @@ public class MockedHsmTest extends SampleTest {
     }
 
     /*
-     * An HsmManager which is always unconnected.
+     * An HsmManager which is always connected.
      */
     private static class ConnectedHsmManager extends AbstractHsmManager {
         private static final String DER_KEY_PATH = "pdfjt-key.der";
