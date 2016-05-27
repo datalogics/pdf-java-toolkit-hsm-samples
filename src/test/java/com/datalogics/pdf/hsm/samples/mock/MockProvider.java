@@ -32,6 +32,9 @@ public class MockProvider extends Provider {
 
         // Provide a MockSigner
         put("Signature.SHA256withRSA", MockSigner.class.getName());
+
+        // Provide a MockKeyStore (mocks the LunaKeyStore)
+        put("KeyStore.Luna", MockKeyStore.class.getName());
     }
 
     /**
