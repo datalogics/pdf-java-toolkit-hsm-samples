@@ -1,0 +1,150 @@
+/*
+ * Copyright 2016 Datalogics Inc.
+ */
+
+package com.datalogics.pdf.security;
+
+import static org.junit.Assert.assertEquals;
+
+import com.datalogics.pdf.hsm.samples.mock.MockProvider;
+import com.datalogics.pdf.security.HsmManager.ConnectionState;
+
+import mockit.Mock;
+import mockit.MockUp;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+
+import com.safenetinc.luna.LunaException;
+import com.safenetinc.luna.LunaSlotManager;
+import com.safenetinc.luna.provider.LunaProvider;
+
+import java.security.Security;
+
+/**
+ * Unit tests for the LunaHsmManager.
+ */
+public class LunaHsmManagerTest {
+    public static final String GOOD_PASSWORD = "good_password";
+    public static final String BAD_PASSWORD = "bad_password";
+
+    @Rule
+    public ExpectedException expected = ExpectedException.none();
+
+    /**
+     * Install mock Luna classes.
+     */
+    @Before
+    public void setUp() {
+        new MockLunaSlotManager();
+        new MockLunaProvider();
+    }
+
+    @Test
+    public void successfulLogin() {
+        final LunaHsmManager lunaHsmManager;
+        lunaHsmManager = (LunaHsmManager) HsmManagerFactory.newInstance(HsmManagerFactory.LUNA_HSM_TYPE);
+
+        if (lunaHsmManager.getConnectionState()
+                      .equals(ConnectionState.READY)) {
+            // Log in to the HSM
+            lunaHsmManager.hsmLogin(new LunaHsmLoginParameters("token", GOOD_PASSWORD));
+        }
+
+        assertEquals("LunaHsmManager login should be successful", ConnectionState.CONNECTED,
+                     lunaHsmManager.getConnectionState());
+    }
+
+    @Test
+    public void unsuccessfulLoginThrowsException() {
+        final LunaHsmManager lunaHsmManager;
+        lunaHsmManager = (LunaHsmManager) HsmManagerFactory.newInstance(HsmManagerFactory.LUNA_HSM_TYPE);
+
+        // Expect a IllegalArgumentException to be thrown
+        expected.expect(IllegalArgumentException.class);
+        expected.expectMessage("Error while logging into the Luna HSM");
+
+        if (lunaHsmManager.getConnectionState()
+                      .equals(ConnectionState.READY)) {
+            // Log in to the HSM
+            lunaHsmManager.hsmLogin(new LunaHsmLoginParameters("token", BAD_PASSWORD));
+        }
+
+        assertEquals("LunaHsmManager login should be unsuccessful", ConnectionState.CONNECTED,
+                     lunaHsmManager.getConnectionState());
+    }
+
+    @Test
+    public void unsuccessfulLoginRemainsInReadyState() {
+        final LunaHsmManager lunaHsmManager;
+        lunaHsmManager = (LunaHsmManager) HsmManagerFactory.newInstance(HsmManagerFactory.LUNA_HSM_TYPE);
+
+        try {
+            if (lunaHsmManager.getConnectionState()
+                              .equals(ConnectionState.READY)) {
+                // Log in to the HSM
+                lunaHsmManager.hsmLogin(new LunaHsmLoginParameters("token", BAD_PASSWORD));
+            }
+        } catch (final IllegalArgumentException e) {
+            // Expected exception
+        }
+
+        assertEquals("LunaHsmManager login should be unsuccessful", ConnectionState.READY,
+                     lunaHsmManager.getConnectionState());
+    }
+
+    /*
+     * Fake LunaSlotManager
+     */
+    public static final class MockLunaSlotManager extends MockUp<LunaSlotManager> {
+        private boolean loggedIn = false;
+
+        @Mock
+        // CHECKSTYLE IGNORE MethodName FOR NEXT 1 LINE
+        public void $init() {}
+
+        @Mock
+        int login(final String password) {
+            loggedIn = true;
+            return 0;
+        }
+
+        @Mock
+        boolean login(final String slot, final String password) {
+            // We will only accept GOOD_PASSWORD
+            if (!password.contentEquals(GOOD_PASSWORD)) {
+                throw new LunaException();
+            }
+            loggedIn = true;
+            return loggedIn;
+        }
+
+        @Mock
+        void logout() {
+            loggedIn = false;
+        }
+
+        @Mock
+        boolean isLoggedIn() {
+            return loggedIn;
+        }
+    }
+
+    /*
+     * Fake LunaProvider
+     */
+    public static final class MockLunaProvider extends MockUp<LunaProvider> {
+        /**
+         * Install a MockProvider to shadow the LunaProvider.
+         */
+        @Mock
+        // CHECKSTYLE IGNORE MethodName FOR NEXT 1 LINE
+        public void $init() {
+            if (Security.getProvider(MockProvider.PROVIDER_NAME) == null) {
+                Security.addProvider(new MockProvider());
+            }
+        }
+    }
+}
