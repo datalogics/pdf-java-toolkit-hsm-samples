@@ -95,6 +95,26 @@ public class LunaHsmManagerTest {
                      lunaHsmManager.getConnectionState());
     }
 
+    @Test
+    public void connectionStateIsCorrectlyObserved() {
+        final LunaHsmManager lunaHsmManager;
+        lunaHsmManager = (LunaHsmManager) HsmManagerFactory.newInstance(HsmManagerFactory.LUNA_HSM_TYPE);
+
+        // Start in READY state
+        assertEquals("LunaHsmManager should start in READY state", ConnectionState.READY,
+                     lunaHsmManager.getConnectionState());
+
+        // In CONNECTED state after login
+        lunaHsmManager.hsmLogin(new LunaHsmLoginParameters("token", GOOD_PASSWORD));
+        assertEquals("LunaHsmManager should be in CONNECTED state after login", ConnectionState.CONNECTED,
+                     lunaHsmManager.getConnectionState());
+
+        // In DISCONNECTED state after logout
+        lunaHsmManager.hsmLogout();
+        assertEquals("LunaHsmManager should be in DISCONNECTED state after logout", ConnectionState.DISCONNECTED,
+                     lunaHsmManager.getConnectionState());
+    }
+
     /*
      * Fake LunaSlotManager
      */
