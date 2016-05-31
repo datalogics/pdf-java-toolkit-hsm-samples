@@ -71,8 +71,10 @@ public final class LunaHsmManager implements HsmManager {
 
         if (slotManager.isLoggedIn()) {
             state = ConnectionState.CONNECTED;
+            loadKeyStore();
+        } else {
+            throw new IllegalArgumentException("Could not log into the Luna HSM");
         }
-        loadKeyStore();
     }
 
     /*
@@ -183,9 +185,6 @@ public final class LunaHsmManager implements HsmManager {
     }
 
     private void loadKeyStore() {
-        if (!state.equals(ConnectionState.CONNECTED)) {
-            throw new SecurityException("Call the hsmLogin method to login to HSM device first.");
-        }
         try {
             // Obtain the Luna Keystore - Access the LunaSA via PKCS11 through
             // the Luna Provider
