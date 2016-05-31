@@ -29,6 +29,8 @@ import java.security.Security;
 public class LunaHsmManagerTest {
     public static final String GOOD_PASSWORD = "good_password";
     public static final String BAD_PASSWORD = "bad_password";
+    public static final String GOOD_SLOT_NAME = "good_slot_name";
+    public static final String BAD_SLOT_NAME = "bad_slot_name";
 
     private LunaHsmManager lunaHsmManager;
 
@@ -48,9 +50,17 @@ public class LunaHsmManagerTest {
 
     @Test
     public void successfulLogin() {
-        lunaHsmManager.hsmLogin(new LunaHsmLoginParameters("token", GOOD_PASSWORD));
+        lunaHsmManager.hsmLogin(new LunaHsmLoginParameters(GOOD_PASSWORD));
 
         assertEquals("LunaHsmManager login should be successful", ConnectionState.CONNECTED,
+                     lunaHsmManager.getConnectionState());
+    }
+
+    @Test
+    public void successfulLoginWithSlotName() {
+        lunaHsmManager.hsmLogin(new LunaHsmLoginParameters(GOOD_SLOT_NAME, GOOD_PASSWORD));
+
+        assertEquals("LunaHsmManager login with good slot name should be successful", ConnectionState.CONNECTED,
                      lunaHsmManager.getConnectionState());
     }
 
@@ -60,7 +70,7 @@ public class LunaHsmManagerTest {
         expected.expect(IllegalArgumentException.class);
         expected.expectMessage("Error while logging into the Luna HSM");
 
-        lunaHsmManager.hsmLogin(new LunaHsmLoginParameters("token", BAD_PASSWORD));
+        lunaHsmManager.hsmLogin(new LunaHsmLoginParameters(BAD_PASSWORD));
 
         assertEquals("LunaHsmManager login should be unsuccessful", ConnectionState.CONNECTED,
                      lunaHsmManager.getConnectionState());
@@ -69,12 +79,36 @@ public class LunaHsmManagerTest {
     @Test
     public void unsuccessfulLoginRemainsInReadyState() {
         try {
-            lunaHsmManager.hsmLogin(new LunaHsmLoginParameters("token", BAD_PASSWORD));
+            lunaHsmManager.hsmLogin(new LunaHsmLoginParameters(BAD_PASSWORD));
         } catch (final IllegalArgumentException e) {
             // Expected exception
         }
 
-        assertEquals("LunaHsmManager login should be unsuccessful", ConnectionState.READY,
+        assertEquals("LunaHsmManager login should be in ready state", ConnectionState.READY,
+                     lunaHsmManager.getConnectionState());
+    }
+
+    @Test
+    public void loginWithBadSlotNameThrowsException() {
+        // Expect a IllegalArgumentException to be thrown
+        expected.expect(IllegalArgumentException.class);
+        expected.expectMessage("Could not log into the Luna HSM");
+
+        lunaHsmManager.hsmLogin(new LunaHsmLoginParameters(BAD_SLOT_NAME, GOOD_PASSWORD));
+
+        assertEquals("LunaHsmManager login with bad slot name should be unsuccessful", ConnectionState.CONNECTED,
+                     lunaHsmManager.getConnectionState());
+    }
+
+    @Test
+    public void loginWithBadSlotNameRemainsInReadyState() {
+        try {
+            lunaHsmManager.hsmLogin(new LunaHsmLoginParameters(BAD_SLOT_NAME, GOOD_PASSWORD));
+        } catch (final IllegalArgumentException e) {
+            // Expected exception
+        }
+
+        assertEquals("LunaHsmManager login should be in ready state", ConnectionState.READY,
                      lunaHsmManager.getConnectionState());
     }
 
@@ -85,7 +119,7 @@ public class LunaHsmManagerTest {
                      lunaHsmManager.getConnectionState());
 
         // In CONNECTED state after login
-        lunaHsmManager.hsmLogin(new LunaHsmLoginParameters("token", GOOD_PASSWORD));
+        lunaHsmManager.hsmLogin(new LunaHsmLoginParameters(GOOD_PASSWORD));
         assertEquals("LunaHsmManager should be in CONNECTED state after login", ConnectionState.CONNECTED,
                      lunaHsmManager.getConnectionState());
 
@@ -98,7 +132,7 @@ public class LunaHsmManagerTest {
 
     @Test
     public void providerNameIsCorrect() {
-        lunaHsmManager.hsmLogin(new LunaHsmLoginParameters("token", GOOD_PASSWORD));
+        lunaHsmManager.hsmLogin(new LunaHsmLoginParameters(GOOD_PASSWORD));
         assertEquals("LunaHsmManager has unexpected provider name", LunaHsmManager.PROVIDER_NAME,
                      lunaHsmManager.getProviderName());
     }
@@ -115,15 +149,24 @@ public class LunaHsmManagerTest {
 
         @Mock
         int login(final String password) {
+            // We will only accept GOOD_PASSWORD
+            if (!password.contentEquals(GOOD_PASSWORD)) {
+                throw new LunaException("Bad password");
+            }
             loggedIn = true;
             return 0;
         }
 
         @Mock
         boolean login(final String slot, final String password) {
+            // We will only accept GOOD_SLOT_NAME
+            if (!slot.contentEquals(GOOD_SLOT_NAME)) {
+                loggedIn = false;
+                return loggedIn;
+            }
             // We will only accept GOOD_PASSWORD
             if (!password.contentEquals(GOOD_PASSWORD)) {
-                throw new LunaException();
+                throw new LunaException("Bad password");
             }
             loggedIn = true;
             return loggedIn;
