@@ -96,6 +96,13 @@ public class LunaHsmManagerTest {
     }
 
 
+    @Test
+    public void providerNameIsCorrect() {
+        lunaHsmManager.hsmLogin(new LunaHsmLoginParameters("token", GOOD_PASSWORD));
+        assertEquals("LunaHsmManager has unexpected provider name", LunaHsmManager.PROVIDER_NAME,
+                     lunaHsmManager.getProviderName());
+    }
+
     /*
      * Fake LunaSlotManager
      */
