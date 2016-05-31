@@ -48,11 +48,7 @@ public class LunaHsmManagerTest {
 
     @Test
     public void successfulLogin() {
-        if (lunaHsmManager.getConnectionState()
-                      .equals(ConnectionState.READY)) {
-            // Log in to the HSM
-            lunaHsmManager.hsmLogin(new LunaHsmLoginParameters("token", GOOD_PASSWORD));
-        }
+        lunaHsmManager.hsmLogin(new LunaHsmLoginParameters("token", GOOD_PASSWORD));
 
         assertEquals("LunaHsmManager login should be successful", ConnectionState.CONNECTED,
                      lunaHsmManager.getConnectionState());
@@ -64,11 +60,7 @@ public class LunaHsmManagerTest {
         expected.expect(IllegalArgumentException.class);
         expected.expectMessage("Error while logging into the Luna HSM");
 
-        if (lunaHsmManager.getConnectionState()
-                      .equals(ConnectionState.READY)) {
-            // Log in to the HSM
-            lunaHsmManager.hsmLogin(new LunaHsmLoginParameters("token", BAD_PASSWORD));
-        }
+        lunaHsmManager.hsmLogin(new LunaHsmLoginParameters("token", BAD_PASSWORD));
 
         assertEquals("LunaHsmManager login should be unsuccessful", ConnectionState.CONNECTED,
                      lunaHsmManager.getConnectionState());
@@ -77,11 +69,7 @@ public class LunaHsmManagerTest {
     @Test
     public void unsuccessfulLoginRemainsInReadyState() {
         try {
-            if (lunaHsmManager.getConnectionState()
-                              .equals(ConnectionState.READY)) {
-                // Log in to the HSM
-                lunaHsmManager.hsmLogin(new LunaHsmLoginParameters("token", BAD_PASSWORD));
-            }
+            lunaHsmManager.hsmLogin(new LunaHsmLoginParameters("token", BAD_PASSWORD));
         } catch (final IllegalArgumentException e) {
             // Expected exception
         }
@@ -106,6 +94,7 @@ public class LunaHsmManagerTest {
         assertEquals("LunaHsmManager should be in DISCONNECTED state after logout", ConnectionState.DISCONNECTED,
                      lunaHsmManager.getConnectionState());
     }
+
 
     /*
      * Fake LunaSlotManager
