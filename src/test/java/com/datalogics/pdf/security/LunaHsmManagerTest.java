@@ -30,6 +30,8 @@ public class LunaHsmManagerTest {
     public static final String GOOD_PASSWORD = "good_password";
     public static final String BAD_PASSWORD = "bad_password";
 
+    private LunaHsmManager lunaHsmManager;
+
     @Rule
     public ExpectedException expected = ExpectedException.none();
 
@@ -40,13 +42,12 @@ public class LunaHsmManagerTest {
     public void setUp() {
         new MockLunaSlotManager();
         new MockLunaProvider();
+
+        lunaHsmManager = (LunaHsmManager) HsmManagerFactory.newInstance(HsmManagerFactory.LUNA_HSM_TYPE);
     }
 
     @Test
     public void successfulLogin() {
-        final LunaHsmManager lunaHsmManager;
-        lunaHsmManager = (LunaHsmManager) HsmManagerFactory.newInstance(HsmManagerFactory.LUNA_HSM_TYPE);
-
         if (lunaHsmManager.getConnectionState()
                       .equals(ConnectionState.READY)) {
             // Log in to the HSM
@@ -59,9 +60,6 @@ public class LunaHsmManagerTest {
 
     @Test
     public void unsuccessfulLoginThrowsException() {
-        final LunaHsmManager lunaHsmManager;
-        lunaHsmManager = (LunaHsmManager) HsmManagerFactory.newInstance(HsmManagerFactory.LUNA_HSM_TYPE);
-
         // Expect a IllegalArgumentException to be thrown
         expected.expect(IllegalArgumentException.class);
         expected.expectMessage("Error while logging into the Luna HSM");
@@ -78,9 +76,6 @@ public class LunaHsmManagerTest {
 
     @Test
     public void unsuccessfulLoginRemainsInReadyState() {
-        final LunaHsmManager lunaHsmManager;
-        lunaHsmManager = (LunaHsmManager) HsmManagerFactory.newInstance(HsmManagerFactory.LUNA_HSM_TYPE);
-
         try {
             if (lunaHsmManager.getConnectionState()
                               .equals(ConnectionState.READY)) {
@@ -97,9 +92,6 @@ public class LunaHsmManagerTest {
 
     @Test
     public void connectionStateIsCorrectlyObserved() {
-        final LunaHsmManager lunaHsmManager;
-        lunaHsmManager = (LunaHsmManager) HsmManagerFactory.newInstance(HsmManagerFactory.LUNA_HSM_TYPE);
-
         // Start in READY state
         assertEquals("LunaHsmManager should start in READY state", ConnectionState.READY,
                      lunaHsmManager.getConnectionState());
