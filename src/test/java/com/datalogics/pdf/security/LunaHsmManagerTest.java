@@ -73,9 +73,6 @@ public class LunaHsmManagerTest {
         expected.expectMessage("Error while logging into the Luna HSM");
 
         lunaHsmManager.hsmLogin(new LunaHsmLoginParameters(BAD_PASSWORD));
-
-        assertEquals("LunaHsmManager login should be unsuccessful", ConnectionState.CONNECTED,
-                     lunaHsmManager.getConnectionState());
     }
 
     @Test
@@ -97,9 +94,6 @@ public class LunaHsmManagerTest {
         expected.expectMessage("Could not log into the Luna HSM");
 
         lunaHsmManager.hsmLogin(new LunaHsmLoginParameters(BAD_SLOT_NAME, GOOD_PASSWORD));
-
-        assertEquals("LunaHsmManager login with bad slot name should be unsuccessful", ConnectionState.CONNECTED,
-                     lunaHsmManager.getConnectionState());
     }
 
     @Test
