@@ -21,6 +21,7 @@ import com.safenetinc.luna.LunaException;
 import com.safenetinc.luna.LunaSlotManager;
 import com.safenetinc.luna.provider.LunaProvider;
 
+import java.security.PrivateKey;
 import java.security.Security;
 
 /**
@@ -31,6 +32,7 @@ public class LunaHsmManagerTest {
     public static final String BAD_PASSWORD = "bad_password";
     public static final String GOOD_SLOT_NAME = "good_slot_name";
     public static final String BAD_SLOT_NAME = "bad_slot_name";
+    public static final String KEY_LABEL = "key_label";
 
     private LunaHsmManager lunaHsmManager;
 
@@ -135,6 +137,14 @@ public class LunaHsmManagerTest {
         lunaHsmManager.hsmLogin(new LunaHsmLoginParameters(GOOD_PASSWORD));
         assertEquals("LunaHsmManager has unexpected provider name", LunaHsmManager.PROVIDER_NAME,
                      lunaHsmManager.getProviderName());
+    }
+
+    @Test
+    public void canRetrieveKey() {
+        lunaHsmManager.hsmLogin(new LunaHsmLoginParameters(GOOD_PASSWORD));
+        final PrivateKey key = lunaHsmManager.getKey(GOOD_PASSWORD, KEY_LABEL);
+        assertEquals("Key should have correct algorithm", "RSA", key.getAlgorithm());
+        assertEquals("Key should have correct format", "PKCS#8", key.getFormat());
     }
 
     /*
