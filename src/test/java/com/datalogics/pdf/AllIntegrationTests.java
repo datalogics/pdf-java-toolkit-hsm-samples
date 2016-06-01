@@ -2,7 +2,7 @@
  * Copyright 2015 Datalogics, Inc.
  */
 
-package com.datalogics.pdf.hsm.samples;
+package com.datalogics.pdf;
 
 import org.junit.runner.RunWith;
 
