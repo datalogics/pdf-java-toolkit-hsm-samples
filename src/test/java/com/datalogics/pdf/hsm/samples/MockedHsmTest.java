@@ -101,11 +101,7 @@ public class MockedHsmTest extends SampleTest {
 
     @Test
     public void signatureIsValid() throws Exception {
-        try {
-            HsmSignDocument.signExistingSignatureFields(connectedHsmManager, inputUrl, outputUrl);
-        } catch (final IllegalStateException e) {
-            // Expected exception
-        }
+        HsmSignDocument.signExistingSignatureFields(connectedHsmManager, inputUrl, outputUrl);
 
         final PDFDocument doc = DocumentUtils.openPdfDocument(outputUrl);
 
