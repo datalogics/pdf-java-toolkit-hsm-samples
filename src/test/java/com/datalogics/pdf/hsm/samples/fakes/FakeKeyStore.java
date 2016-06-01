@@ -2,7 +2,7 @@
  * Copyright 2016 Datalogics Inc.
  */
 
-package com.datalogics.pdf.hsm.samples.mock;
+package com.datalogics.pdf.hsm.samples.fakes;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,16 +23,16 @@ import java.util.Enumeration;
 /**
  * Mock keyPair store for testing.
  */
-public class MockKeyStore extends KeyStoreSpi {
+public class FakeKeyStore extends KeyStoreSpi {
     private KeyPair keyPair;
 
     /**
-     * Constructor for MockKeyStore.
+     * Constructor for FakeKeyStore.
      *
      * @throws NoSuchProviderException if provider is not found
      * @throws NoSuchAlgorithmException if algorithm is not found
      */
-    public MockKeyStore() throws NoSuchAlgorithmException, NoSuchProviderException {
+    public FakeKeyStore() throws NoSuchAlgorithmException, NoSuchProviderException {
         final KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
         final SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
         generator.initialize(1024, random);

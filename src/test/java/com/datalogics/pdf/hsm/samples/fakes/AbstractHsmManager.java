@@ -2,7 +2,7 @@
  * Copyright 2016 Datalogics Inc.
  */
 
-package com.datalogics.pdf.hsm.samples.mock;
+package com.datalogics.pdf.hsm.samples.fakes;
 
 import com.datalogics.pdf.security.HsmLoginParameters;
 import com.datalogics.pdf.security.HsmManager;

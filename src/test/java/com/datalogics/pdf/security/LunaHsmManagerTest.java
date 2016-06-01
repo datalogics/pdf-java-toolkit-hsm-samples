@@ -6,7 +6,7 @@ package com.datalogics.pdf.security;
 
 import static org.junit.Assert.assertEquals;
 
-import com.datalogics.pdf.hsm.samples.mock.MockProvider;
+import com.datalogics.pdf.hsm.samples.fakes.FakeProvider;
 import com.datalogics.pdf.security.HsmManager.ConnectionState;
 
 import mockit.Mock;
@@ -192,13 +192,13 @@ public class LunaHsmManagerTest {
      */
     public static final class MockLunaProvider extends MockUp<LunaProvider> {
         /**
-         * Install a MockProvider to shadow the LunaProvider.
+         * Install a FakeProvider to shadow the LunaProvider.
          */
         @Mock
         // CHECKSTYLE IGNORE MethodName FOR NEXT 1 LINE
         public void $init() {
-            if (Security.getProvider(MockProvider.PROVIDER_NAME) == null) {
-                Security.addProvider(new MockProvider());
+            if (Security.getProvider(FakeProvider.PROVIDER_NAME) == null) {
+                Security.addProvider(new FakeProvider());
             }
         }
     }

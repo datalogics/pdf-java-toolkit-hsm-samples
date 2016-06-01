@@ -7,7 +7,7 @@ package com.datalogics.pdf.hsm.samples;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-import com.datalogics.pdf.hsm.samples.mock.AbstractHsmManager;
+import com.datalogics.pdf.hsm.samples.fakes.AbstractHsmManager;
 import com.datalogics.pdf.hsm.samples.util.LogRecordListCollector;
 import com.datalogics.pdf.security.HsmManager;
 

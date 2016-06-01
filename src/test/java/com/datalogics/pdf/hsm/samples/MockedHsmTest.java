@@ -18,8 +18,8 @@ import com.adobe.pdfjt.pdf.document.PDFDocument;
 import com.adobe.pdfjt.services.digsig.SignatureFieldInterface;
 import com.adobe.pdfjt.services.digsig.SignatureManager;
 
-import com.datalogics.pdf.hsm.samples.mock.AbstractHsmManager;
-import com.datalogics.pdf.hsm.samples.mock.MockProvider;
+import com.datalogics.pdf.hsm.samples.fakes.AbstractHsmManager;
+import com.datalogics.pdf.hsm.samples.fakes.FakeProvider;
 import com.datalogics.pdf.hsm.samples.util.DocumentUtils;
 import com.datalogics.pdf.hsm.samples.util.LogRecordListCollector;
 import com.datalogics.pdf.security.HsmManager;
@@ -170,12 +170,12 @@ public class MockedHsmTest extends SampleTest {
 
         @Override
         public String getProviderName() {
-            return MockProvider.PROVIDER_NAME;
+            return FakeProvider.PROVIDER_NAME;
         }
 
         private void initializeProvider() {
-            if (Security.getProvider(MockProvider.PROVIDER_NAME) == null) {
-                Security.addProvider(new MockProvider());
+            if (Security.getProvider(FakeProvider.PROVIDER_NAME) == null) {
+                Security.addProvider(new FakeProvider());
             }
         }
 

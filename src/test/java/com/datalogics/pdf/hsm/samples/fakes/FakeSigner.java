@@ -2,7 +2,7 @@
  * Copyright 2016 Datalogics Inc.
  */
 
-package com.datalogics.pdf.hsm.samples.mock;
+package com.datalogics.pdf.hsm.samples.fakes;
 
 import java.security.InvalidKeyException;
 import java.security.InvalidParameterException;
@@ -16,10 +16,10 @@ import java.security.SignatureSpi;
 /**
  * Mock signer for testing.
  */
-public class MockSigner extends SignatureSpi {
+public class FakeSigner extends SignatureSpi {
     Signature signature;
 
-    public MockSigner() throws NoSuchAlgorithmException {
+    public FakeSigner() throws NoSuchAlgorithmException {
         signature = Signature.getInstance("SHA256withRSA");
     }
 
