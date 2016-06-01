@@ -91,7 +91,7 @@ public class LunaHsmManagerTest {
     public void loginWithBadSlotNameThrowsException() {
         // Expect a IllegalArgumentException to be thrown
         expected.expect(IllegalArgumentException.class);
-        expected.expectMessage("Could not log into the Luna HSM");
+        expected.expectMessage("Token label must refer to available slot");
 
         lunaHsmManager.hsmLogin(new LunaHsmLoginParameters(BAD_SLOT_NAME, GOOD_PASSWORD));
     }
@@ -184,6 +184,15 @@ public class LunaHsmManagerTest {
         @Mock
         boolean isLoggedIn() {
             return loggedIn;
+        }
+
+        @Mock
+        int findSlotFromLabel(final String tokenLabel) {
+            if (tokenLabel.contentEquals(GOOD_SLOT_NAME)) {
+                return 0;
+            } else {
+                return -1;
+            }
         }
     }
 
