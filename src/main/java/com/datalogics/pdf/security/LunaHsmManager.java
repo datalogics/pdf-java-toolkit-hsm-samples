@@ -75,7 +75,7 @@ public final class LunaHsmManager implements HsmManager {
             state = ConnectionState.CONNECTED;
             loadKeyStore();
         } else {
-            throw new IllegalArgumentException("Could not log into the Luna HSM");
+            throw new IllegalStateException("Could not log into the Luna HSM");
         }
     }
 
