@@ -230,7 +230,6 @@
             <configuration>
               <descriptors>
                 <descriptor>src/assembly/distribution.xml</descriptor>
-                <descriptor>src/assembly/files.xml</descriptor>
               </descriptors>
             </configuration>
           </execution>
