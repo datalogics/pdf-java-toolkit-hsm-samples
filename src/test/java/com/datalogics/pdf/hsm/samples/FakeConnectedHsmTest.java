@@ -47,8 +47,8 @@ import java.util.logging.Logger;
 /**
  * Unit tests simulating a connected HSM device.
  */
-public class MockedHsmTest extends SampleTest {
-    private static final Logger LOGGER = Logger.getLogger(MockedHsmTest.class.getName());
+public class FakeConnectedHsmTest extends SampleTest {
+    private static final Logger LOGGER = Logger.getLogger(FakeConnectedHsmTest.class.getName());
 
     static final String FILE_NAME = "SignedField.pdf";
     static final String QUALIFIED_SIGNATURE_FIELD_NAME = "Approver";
@@ -141,8 +141,8 @@ public class MockedHsmTest extends SampleTest {
         private static final String DER_KEY_PATH = "pdfjt-key.der";
         private static final String DER_CERT_PATH = "pdfjt-cert.der";
 
-        final InputStream certStream = MockedHsmTest.class.getResourceAsStream(DER_CERT_PATH);
-        final InputStream keyStream = MockedHsmTest.class.getResourceAsStream(DER_KEY_PATH);
+        final InputStream certStream = FakeConnectedHsmTest.class.getResourceAsStream(DER_CERT_PATH);
+        final InputStream keyStream = FakeConnectedHsmTest.class.getResourceAsStream(DER_KEY_PATH);
 
         private Key key;
         private Certificate[] certificateChain;
