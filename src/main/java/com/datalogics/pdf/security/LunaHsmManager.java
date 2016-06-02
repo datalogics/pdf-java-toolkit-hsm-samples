@@ -55,10 +55,12 @@ public final class LunaHsmManager implements HsmManager {
                                                + "to hsmLogin for LunaHsmManager");
         }
 
-        checkLoginAbility(parms);
+        final LunaHsmLoginParameters lunaParms = (LunaHsmLoginParameters) parms;
 
-        final String tokenLabel = ((LunaHsmLoginParameters) parms).getTokenLabel();
-        final String password = parms.getPassword();
+        checkLoginAbility(lunaParms);
+
+        final String tokenLabel = lunaParms.getTokenLabel();
+        final String password = lunaParms.getPassword();
         try {
             if (tokenLabel == null) {
                 slotManager.login(password);
@@ -71,8 +73,10 @@ public final class LunaHsmManager implements HsmManager {
 
         if (slotManager.isLoggedIn()) {
             state = ConnectionState.CONNECTED;
+            loadKeyStore();
+        } else {
+            throw new IllegalStateException("Could not log into the Luna HSM");
         }
-        loadKeyStore();
     }
 
     /*
@@ -154,7 +158,7 @@ public final class LunaHsmManager implements HsmManager {
         return PROVIDER_NAME;
     }
 
-    private void checkLoginAbility(final HsmLoginParameters parms) {
+    private void checkLoginAbility(final LunaHsmLoginParameters parms) {
         if (!state.equals(ConnectionState.READY)) {
             throw new IllegalStateException("HsmManager not in a ready to login state, "
                                             + "create a new HsmManager instance");
@@ -166,6 +170,12 @@ public final class LunaHsmManager implements HsmManager {
             throw new IllegalArgumentException("Password must not be null");
         } else if (password.length() <= 0) {
             throw new IllegalArgumentException("Password must not be zero length");
+        }
+
+        // Confirm that tokenLabel exists
+        final String tokenLabel = parms.getTokenLabel();
+        if (tokenLabel != null && slotManager.findSlotFromLabel(tokenLabel) < 0) {
+            throw new IllegalArgumentException("Token label must refer to available slot");
         }
     }
 
@@ -183,9 +193,6 @@ public final class LunaHsmManager implements HsmManager {
     }
 
     private void loadKeyStore() {
-        if (!state.equals(ConnectionState.CONNECTED)) {
-            throw new SecurityException("Call the hsmLogin method to login to HSM device first.");
-        }
         try {
             // Obtain the Luna Keystore - Access the LunaSA via PKCS11 through
             // the Luna Provider

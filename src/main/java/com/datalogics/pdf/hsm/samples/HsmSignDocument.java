@@ -36,6 +36,7 @@ import java.net.URL;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.Iterator;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -59,7 +60,6 @@ public final class HsmSignDocument {
     public static final String INPUT_UNSIGNED_PDF_PATH = "UnsignedDocument.pdf";
     public static final String OUTPUT_SIGNED_PDF_PATH = "SignedField.pdf";
 
-    private static HsmManager hsmManager;
     private static String password;
 
     /**
@@ -86,7 +86,7 @@ public final class HsmSignDocument {
         final Configuration loginConfiguration = SampleConfigurationUtils.getConfiguration(PROPERTIES_FILE);
         password = loginConfiguration.getString(PASSWORD_PROPERTY);
 
-        hsmManager = HsmManagerFactory.newInstance(HsmManagerFactory.LUNA_HSM_TYPE);
+        final HsmManager hsmManager = HsmManagerFactory.newInstance(HsmManagerFactory.LUNA_HSM_TYPE);
 
         if (hsmManager.getConnectionState()
                       .equals(ConnectionState.READY)) {
@@ -113,7 +113,7 @@ public final class HsmSignDocument {
         }
 
         // Query and sign all permissible signature fields.
-        signExistingSignatureFields(inputUrl, outputUrl);
+        signExistingSignatureFields(hsmManager, inputUrl, outputUrl);
 
         // Log out of the HSM
         hsmManager.hsmLogout();
@@ -122,11 +122,25 @@ public final class HsmSignDocument {
     /**
      * Sign existing signature fields found in the example document.
      *
+     * <p>
+     * This takes an HsmManager that is in the CONNECTED state.
+     *
+     * @param hsmManager a connected HsmManager
      * @param inputUrl the URL to the input file
      * @param outputUrl the path to the file to contain the signed document
      * @throws Exception a general exception was thrown
      */
-    public static void signExistingSignatureFields(final URL inputUrl, final URL outputUrl) throws Exception {
+    public static void signExistingSignatureFields(final HsmManager hsmManager, final URL inputUrl,
+                                                   final URL outputUrl)
+                    throws Exception {
+        // Verify that the HSM is connected
+        if (hsmManager.getConnectionState() != HsmManager.ConnectionState.CONNECTED) {
+            if (LOGGER.isLoggable(Level.SEVERE)) {
+                LOGGER.severe("HsmManager is not connected to HSM device.");
+            }
+            throw new IllegalStateException("HsmManager is not connected to HSM device.");
+        }
+
         PDFDocument pdfDoc = null;
         try {
             // Get the PDF file.
@@ -139,7 +153,7 @@ public final class HsmSignDocument {
                 final Iterator<SignatureFieldInterface> iter = sigService.getDocSignatureFieldIterator();
                 while (iter.hasNext()) {
                     final SignatureFieldInterface sigField = iter.next();
-                    signField(sigService, sigField, outputUrl);
+                    signField(hsmManager, sigService, sigField, outputUrl);
                 }
             }
         } finally {
@@ -153,7 +167,7 @@ public final class HsmSignDocument {
         }
     }
 
-    private static void signField(final SignatureManager sigMgr,
+    private static void signField(final HsmManager hsmManager, final SignatureManager sigMgr,
                                   final SignatureFieldInterface sigField, final URL outputUrl)
                     throws Exception {
 
