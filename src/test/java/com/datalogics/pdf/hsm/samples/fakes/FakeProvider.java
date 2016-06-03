@@ -4,7 +4,10 @@
 
 package com.datalogics.pdf.hsm.samples.fakes;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
 import java.security.Provider;
+import java.security.Security;
 
 /**
  * Mock security provider for testing.
@@ -32,6 +35,9 @@ public class FakeProvider extends Provider {
 
         // Provide a FakeSigner
         put("Signature.SHA256withRSA", FakeSigner.class.getName());
+
+        // FakeKeyStore depends on Bouncy Castle
+        Security.addProvider(new BouncyCastleProvider());
 
         // Provide a FakeKeyStore (mocks the LunaKeyStore)
         put("KeyStore.Luna", FakeKeyStore.class.getName());
