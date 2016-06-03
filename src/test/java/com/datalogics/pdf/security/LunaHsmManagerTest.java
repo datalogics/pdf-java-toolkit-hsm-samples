@@ -23,6 +23,7 @@ import com.safenetinc.luna.provider.LunaProvider;
 
 import java.security.PrivateKey;
 import java.security.Security;
+import java.security.cert.X509Certificate;
 
 /**
  * Unit tests for the LunaHsmManager.
@@ -33,6 +34,7 @@ public class LunaHsmManagerTest {
     public static final String GOOD_SLOT_NAME = "good_slot_name";
     public static final String BAD_SLOT_NAME = "bad_slot_name";
     public static final String KEY_LABEL = "key_label";
+    public static final String CERTIFICATE_LABEL = "certificate_label";
 
     private LunaHsmManager lunaHsmManager;
 
@@ -139,6 +141,16 @@ public class LunaHsmManagerTest {
         final PrivateKey key = lunaHsmManager.getKey(GOOD_PASSWORD, KEY_LABEL);
         assertEquals("Key should have correct algorithm", "RSA", key.getAlgorithm());
         assertEquals("Key should have correct format", "PKCS#8", key.getFormat());
+    }
+
+    @Test
+    public void canRetrieveCertificateChain() {
+        lunaHsmManager.hsmLogin(new LunaHsmLoginParameters(GOOD_PASSWORD));
+        final X509Certificate[] certificates = lunaHsmManager.getCertificateChain(CERTIFICATE_LABEL);
+        for (final X509Certificate certificate : certificates) {
+            assertEquals("Certificate is wrong type", "X.509", certificate.getType());
+            assertEquals("Issuer name is correct", "CN=www.datalogics.com", certificate.getIssuerDN().getName());
+        }
     }
 
     /*
