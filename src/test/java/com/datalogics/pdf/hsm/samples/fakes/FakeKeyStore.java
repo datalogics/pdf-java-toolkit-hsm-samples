@@ -22,7 +22,6 @@ import java.security.KeyPairGenerator;
 import java.security.KeyStoreException;
 import java.security.KeyStoreSpi;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
@@ -34,24 +33,21 @@ import java.util.Enumeration;
  * Mock keyPair store for testing.
  */
 public class FakeKeyStore extends KeyStoreSpi {
+    public static final String ISSUER_NAME = "CN=www.datalogics.com";
+
     private KeyPair keyPair;
     private X509Certificate certificate;
 
     /**
      * Constructor for FakeKeyStore.
      *
-     * @throws NoSuchProviderException if provider is not found
      * @throws NoSuchAlgorithmException if algorithm is not found
      * @throws CertificateException if certificate could not be created
      * @throws OperatorCreationException if certificate could not be created
      */
-    public FakeKeyStore() throws NoSuchAlgorithmException, NoSuchProviderException, OperatorCreationException,
-                    CertificateException {
-        final KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
-        final SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
-        generator.initialize(1024, random);
-        keyPair = generator.generateKeyPair();
-        certificate = generateX509Certificate();
+    public FakeKeyStore() throws NoSuchAlgorithmException, OperatorCreationException, CertificateException {
+        keyPair = createKeyPair();
+        certificate = createX509Certificate(keyPair);
     }
 
     /* (non-Javadoc)
@@ -177,9 +173,23 @@ public class FakeKeyStore extends KeyStoreSpi {
     public void engineLoad(final InputStream stream, final char[] password)
                     throws IOException, NoSuchAlgorithmException, CertificateException {}
 
-    private X509Certificate generateX509Certificate() throws OperatorCreationException, CertificateException {
-        final X500Name issuerName = new X500Name("CN=www.datalogics.com");
-        final X500Name subjectName = issuerName;
+    /*
+     * Create a KeyPair for testing.
+     */
+    private KeyPair createKeyPair() throws NoSuchAlgorithmException {
+        final KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
+        final SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+        generator.initialize(1024, random);
+        return generator.generateKeyPair();
+    }
+
+    /*
+     * Create an X509 certificate for testing.
+     */
+    private X509Certificate createX509Certificate(final KeyPair keyPair)
+                    throws OperatorCreationException, CertificateException {
+        final X500Name issuerName = new X500Name(ISSUER_NAME);
+        final X500Name subjectName = issuerName; // Same as issuer
         final BigInteger serial = BigInteger.valueOf(3);
         final Date notBefore = new Date(System.currentTimeMillis() - 1000L * 60 * 60 * 24 * 30);
         final Date notAfter = new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 30);

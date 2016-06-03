@@ -6,6 +6,7 @@ package com.datalogics.pdf.security;
 
 import static org.junit.Assert.assertEquals;
 
+import com.datalogics.pdf.hsm.samples.fakes.FakeKeyStore;
 import com.datalogics.pdf.hsm.samples.fakes.FakeProvider;
 import com.datalogics.pdf.security.HsmManager.ConnectionState;
 
@@ -149,7 +150,7 @@ public class LunaHsmManagerTest {
         final X509Certificate[] certificates = lunaHsmManager.getCertificateChain(CERTIFICATE_LABEL);
         for (final X509Certificate certificate : certificates) {
             assertEquals("Certificate is wrong type", "X.509", certificate.getType());
-            assertEquals("Issuer name is correct", "CN=www.datalogics.com", certificate.getIssuerDN().getName());
+            assertEquals("Issuer name is correct", FakeKeyStore.ISSUER_NAME, certificate.getIssuerDN().getName());
         }
     }
 
